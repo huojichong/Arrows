@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviour
         FindAllArrowBlocks();
         FindAllSegmentedArrows();
         FindAllMegaBendArrows();
+        
+     
+        
     }
     
     void Update()

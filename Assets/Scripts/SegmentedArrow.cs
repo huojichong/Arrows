@@ -8,9 +8,10 @@ using System.Collections.Generic;
 public class SegmentedArrow : MonoBehaviour
 {
     [Header("分段配置")]
-    public int segmentCount = 8; // 箭头分段数量（类似蛇的身体长度）
+    public int segmentCount = 8; // 箭头分段数量
     public float segmentSpacing = 0.3f; // 分段间距
     public GameObject segmentPrefab; // 分段预制体
+    public bool autoCreateSegments = true; // 是否自动创建分段（如果使用单体模型变形，请设为 false）
     
     [Header("移动配置")]
     public float moveSpeed = 3f;
@@ -37,7 +38,10 @@ public class SegmentedArrow : MonoBehaviour
             pathFollower = gameObject.AddComponent<CurvedPathFollower>();
         }
         
-        InitializeSegments();
+        if (autoCreateSegments)
+        {
+            InitializeSegments();
+        }
     }
     
     void Start()

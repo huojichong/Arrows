@@ -14,6 +14,12 @@ public class MegaBendArrow : MonoBehaviour
     public ArrowBlock.ArrowType arrowType = ArrowBlock.ArrowType.Straight;
     public ArrowBlock.Direction currentDirection = ArrowBlock.Direction.Forward;
     
+    [Header("模型配置")]
+    public float startLength = 1.0f;
+    public float turnLength = 1.0f;
+    public float tailLength = 0.5f;
+    public float thickness = 0.3f;
+    
     [Header("移动参数")]
     public float moveSpeed = 3f;
     public float gridSize = 1f;
@@ -64,6 +70,24 @@ public class MegaBendArrow : MonoBehaviour
     }
     
     /// <summary>
+    /// 根据配置初始化箭头
+    /// </summary>
+    public void Setup(ArrowBlockData data)
+    {
+        this.arrowType = data.arrowType;
+        this.currentDirection = data.initialDirection;
+        this.startLength = data.startLength;
+        this.turnLength = data.turnLength;
+        this.tailLength = data.tailLength;
+        this.thickness = data.thickness;
+        
+        // 调整模型缩放（粗细）
+        transform.localScale = new Vector3(thickness, thickness, 1f);
+        
+        GenerateArrowPath();
+    }
+    
+    /// <summary>
     /// 生成箭头路径
     /// </summary>
     void GenerateArrowPath()
@@ -80,67 +104,51 @@ public class MegaBendArrow : MonoBehaviour
         switch (arrowType)
         {
             case ArrowBlock.ArrowType.Straight:
-                // 直线前进
-                for (int i = 1; i <= 5; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * gridSize;
-                    targetPath.Add(currentPos);
-                    pathDirections.Add(currentDir);
-                }
+                // 直线前进：起点 + 身体
+                currentPos += GetDirectionVector(currentDir) * (startLength + turnLength + tailLength);
+                targetPath.Add(currentPos);
+                pathDirections.Add(currentDir);
                 break;
                 
             case ArrowBlock.ArrowType.TurnLeft:
-                // 前进后左转
-                for (int i = 1; i <= 3; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * gridSize;
-                    targetPath.Add(currentPos);
-                    pathDirections.Add(currentDir);
-                }
+                // 前进一段后左转
+                currentPos += GetDirectionVector(currentDir) * startLength;
+                targetPath.Add(currentPos);
+                pathDirections.Add(currentDir);
+                
                 currentDir = TurnLeft(currentDir);
-                for (int i = 1; i <= 3; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * gridSize;
-                    targetPath.Add(currentPos);
-                    pathDirections.Add(currentDir);
-                }
+                currentPos += GetDirectionVector(currentDir) * turnLength;
+                targetPath.Add(currentPos);
+                pathDirections.Add(currentDir);
                 break;
                 
             case ArrowBlock.ArrowType.TurnRight:
-                // 前进后右转
-                for (int i = 1; i <= 3; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * gridSize;
-                    targetPath.Add(currentPos);
-                    pathDirections.Add(currentDir);
-                }
+                // 前进一段后右转
+                currentPos += GetDirectionVector(currentDir) * startLength;
+                targetPath.Add(currentPos);
+                pathDirections.Add(currentDir);
+                
                 currentDir = TurnRight(currentDir);
-                for (int i = 1; i <= 3; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * gridSize;
-                    targetPath.Add(currentPos);
-                    pathDirections.Add(currentDir);
-                }
+                currentPos += GetDirectionVector(currentDir) * turnLength;
+                targetPath.Add(currentPos);
+                pathDirections.Add(currentDir);
                 break;
                 
             case ArrowBlock.ArrowType.UTurn:
-                // U型转弯
-                currentPos += GetDirectionVector(currentDir) * gridSize;
+                // U型转弯：前进 -> 转弯 -> 前进
+                currentPos += GetDirectionVector(currentDir) * startLength;
                 targetPath.Add(currentPos);
                 pathDirections.Add(currentDir);
                 
                 currentDir = TurnLeft(currentDir);
-                currentPos += GetDirectionVector(currentDir) * gridSize;
+                currentPos += GetDirectionVector(currentDir) * gridSize; // U型中间段
                 targetPath.Add(currentPos);
                 pathDirections.Add(currentDir);
                 
                 currentDir = TurnLeft(currentDir);
-                for (int i = 1; i <= 2; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * gridSize;
-                    targetPath.Add(currentPos);
-                    pathDirections.Add(currentDir);
-                }
+                currentPos += GetDirectionVector(currentDir) * turnLength;
+                targetPath.Add(currentPos);
+                pathDirections.Add(currentDir);
                 break;
         }
     }
