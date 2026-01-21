@@ -29,7 +29,7 @@ public class GridRopeFollower : MonoBehaviour
         demoWaypoints.Add(p);
         p += Vector3.forward * 3;
         demoWaypoints.Add(p);
-        p += Vector3.right * 3;
+        p += Vector3.right * 10;
         demoWaypoints.Add(p);
 
         ropeController.SetWaypoints(demoWaypoints);
@@ -38,12 +38,6 @@ public class GridRopeFollower : MonoBehaviour
 
     void Update()
     {
-        // 演示拉伸：随时间变化 stretchMultiplier
-        if (ropeController != null)
-        {
-            ropeController.stretchMultiplier = 1.0f + Mathf.PingPong(Time.time * stretchSpeed, 1.0f);
-        }
-
         // 按键演示方向控制 (可选)
         if (Input.GetKeyDown(KeyCode.Space))
         {

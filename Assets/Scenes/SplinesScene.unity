@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb8b7297b706948ed8c00fc8dd0ff0e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  length: 3
+  length: 8
   radius: 0.15
   radialSegments: 18
   lengthSegments: 30
@@ -224,11 +224,11 @@ MonoBehaviour:
   bones: []
   baseLength: 1
   stretchMultiplier: 1
-  moveSpeed: 2
+  moveSpeed: 5
   isMoving: 0
   currentDistance: 0
   curvatureSensitivity: 8
-  samplingCount: 60
+  positionSmoothing: 0.1
   waypoints: []
 --- !u!114 &1285186005
 MonoBehaviour:
@@ -686,7 +686,7 @@ Transform:
   m_GameObject: {fileID: 1800560592}
   serializedVersion: 2
   m_LocalRotation: {x: 0.61772245, y: 0, z: 0, w: 0.78639627}
-  m_LocalPosition: {x: 7.1, y: 13.5, z: -1.6}
+  m_LocalPosition: {x: -0.9, y: 13.5, z: -1.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
