@@ -71,10 +71,11 @@ public class SplineRopeController : MonoBehaviour
         if (isMoving)
         {
             currentDistance += moveSpeed * Time.deltaTime;
+            
+            // 每一帧更新骨骼位置和旋转
+            UpdateBones();
         }
         
-        // 每一帧更新骨骼位置和旋转
-        UpdateBones();
     }
 
     /// <summary>

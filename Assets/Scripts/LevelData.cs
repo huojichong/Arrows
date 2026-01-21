@@ -28,5 +28,6 @@ public class ArrowBlockData
     [Header("视觉配置")]
     public Color blockColor = Color.gray;
     public List<Vector3> customPath;  // 自定义路径点
+    public int pathLength;
 }
 

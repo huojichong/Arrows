@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace ConfigBean
 {
     /// <summary>
     /// 关卡数据配置
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class LevelDataConfig
     {
         public int levelNumber;
@@ -18,7 +17,7 @@ namespace ConfigBean
     /// <summary>
     /// 单个箭头块的数据
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class SnakeDataConfig
     {
         public string id;

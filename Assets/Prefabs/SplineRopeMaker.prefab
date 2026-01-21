@@ -906,7 +906,7 @@ MonoBehaviour:
   - {fileID: 3186326936942895989}
   baseLength: 1
   stretchMultiplier: 1
-  moveSpeed: 5
+  moveSpeed: 2
   isMoving: 0
   currentDistance: 56.077026
   curvatureSensitivity: 8

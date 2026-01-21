@@ -1,6 +1,3 @@
-
-using System;
-using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
 
@@ -40,8 +37,6 @@ public class LevelManager : MonoBehaviour
         {
             CreateArrowBlock(blockData);
         }
-
-
     }
     
     /// <summary>
@@ -51,7 +46,9 @@ public class LevelManager : MonoBehaviour
     {
         var splineRopeController = Instantiate(arrowBlockPrefab).GetComponent<SplineRopeController>();
         splineRopeController.SetWaypoints(data.customPath);
-        splineRopeController.isMoving = false;
+        splineRopeController.baseLength = data.pathLength;
+        splineRopeController.currentDistance = data.pathLength;
+        splineRopeController.isMoving = true;
         return splineRopeController.gameObject;
     }
     

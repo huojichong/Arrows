@@ -345,108 +345,8 @@ MonoBehaviour:
       m_Data: []
   m_Splines:
   - m_EditModeType: 1
-    m_Knots:
-    - Position:
-        x: -1.2141786
-        y: 0
-        z: 11.703535
-      TangentIn:
-        x: -0
-        y: -0
-        z: -1.0986962
-      TangentOut:
-        x: 0
-        y: 0
-        z: 1.0986962
-      Rotation:
-        value:
-          x: 0
-          y: 0.7208184
-          z: 0
-          w: 0.6931239
-    - Position:
-        x: 9.764356
-        y: 0
-        z: 11.273302
-      TangentIn:
-        x: -0
-        y: -0
-        z: -2.503836
-      TangentOut:
-        x: 0
-        y: 0
-        z: 2.3493733
-      Rotation:
-        value:
-          x: 0
-          y: 0.931443
-          z: 0
-          w: 0.36388755
-    - Position:
-        x: 9.359409
-        y: 0
-        z: 1.6085875
-      TangentIn:
-        x: -0
-        y: -0
-        z: -2.5156522
-      TangentOut:
-        x: 0
-        y: 0
-        z: 2.6506476
-      Rotation:
-        value:
-          x: 0
-          y: 0.93071675
-          z: 0
-          w: -0.3657409
-    - Position:
-        x: -1.3089314
-        y: 0
-        z: 0.3767606
-      TangentIn:
-        x: -0
-        y: -0
-        z: -1.0739223
-      TangentOut:
-        x: 0
-        y: 0
-        z: 1.0739223
-      Rotation:
-        value:
-          x: 0
-          y: 0.74656
-          z: 0
-          w: -0.66531813
-    - Position:
-        x: -1.3089314
-        y: 0
-        z: 0.3767606
-      TangentIn:
-        x: -0
-        y: -0
-        z: -0
-      TangentOut:
-        x: 0
-        y: 0
-        z: 0
-      Rotation:
-        value:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-    m_MetaData:
-    - Mode: 0
-      Tension: 0.5
-    - Mode: 0
-      Tension: 0.5
-    - Mode: 0
-      Tension: 0.5
-    - Mode: 0
-      Tension: 0.5
-    - Mode: 0
-      Tension: 0.5
+    m_Knots: []
+    m_MetaData: []
     m_Closed: 0
     m_IntData:
       m_Data: []
@@ -457,12 +357,7 @@ MonoBehaviour:
     m_ObjectData:
       m_Data: []
   m_Knots:
-    m_KnotsLink:
-    - Knots:
-      - Spline: 0
-        Knot: 3
-      - Spline: 0
-        Knot: 4
+    m_KnotsLink: []
 --- !u!137 &1285186006
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -483,7 +378,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: ea3a6f1cae9f8427784026858168aa87, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
