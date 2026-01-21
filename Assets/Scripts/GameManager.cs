@@ -17,11 +17,11 @@ public class GameManager : MonoBehaviour
     [Header("引用")]
     public List<ArrowBlock> arrowBlocks = new List<ArrowBlock>();
     public List<SegmentedArrow> segmentedArrows = new List<SegmentedArrow>();
-    public List<MegaBendArrow> megaBendArrows = new List<MegaBendArrow>();
+    // public List<MegaBendArrow> megaBendArrows = new List<MegaBendArrow>();
     
     private ArrowBlock selectedArrow = null;
     private SegmentedArrow selectedSegmentedArrow = null;
-    private MegaBendArrow selectedMegaBendArrow = null;
+    // private MegaBendArrow selectedMegaBendArrow = null;
     
     void Start()
     {
@@ -58,12 +58,12 @@ public class GameManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit, 100f, arrowLayer))
             {
                 // 先检查是否是 MegaBend 箭头
-                MegaBendArrow megaBendArrow = hit.collider.GetComponent<MegaBendArrow>();
-                if (megaBendArrow != null)
-                {
-                    OnMegaBendArrowClicked(megaBendArrow);
-                    return;
-                }
+                // MegaBendArrow megaBendArrow = hit.collider.GetComponent<MegaBendArrow>();
+                // if (megaBendArrow != null)
+                // {
+                //     OnMegaBendArrowClicked(megaBendArrow);
+                //     return;
+                // }
                 
                 // 再检查是否是分段箭头
                 SegmentedArrow segArrow = hit.collider.GetComponentInParent<SegmentedArrow>();
@@ -91,12 +91,12 @@ public class GameManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit, 100f, arrowLayer))
             {
                 // 先检查是否是 MegaBend 箭头
-                MegaBendArrow megaBendArrow = hit.collider.GetComponent<MegaBendArrow>();
-                if (megaBendArrow != null)
-                {
-                    OnMegaBendArrowClicked(megaBendArrow);
-                    return;
-                }
+                // MegaBendArrow megaBendArrow = hit.collider.GetComponent<MegaBendArrow>();
+                // if (megaBendArrow != null)
+                // {
+                //     OnMegaBendArrowClicked(megaBendArrow);
+                //     return;
+                // }
                 
                 // 再检查是否是分段箭头
                 SegmentedArrow segArrow = hit.collider.GetComponentInParent<SegmentedArrow>();
@@ -163,30 +163,12 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void FindAllMegaBendArrows()
     {
-        megaBendArrows.Clear();
-        MegaBendArrow[] foundMegaBend = FindObjectsOfType<MegaBendArrow>();
-        megaBendArrows.AddRange(foundMegaBend);
-        Debug.Log($"找到 {megaBendArrows.Count} 个 MegaBend 箭头");
+        // megaBendArrows.Clear();
+        // MegaBendArrow[] foundMegaBend = FindObjectsOfType<MegaBendArrow>();
+        // megaBendArrows.AddRange(foundMegaBend);
+        // Debug.Log($"找到 {megaBendArrows.Count} 个 MegaBend 箭头");
     }
     
-    /// <summary>
-    /// MegaBend 箭头被点击时的处理
-    /// </summary>
-    void OnMegaBendArrowClicked(MegaBendArrow arrow)
-    {
-        if (arrow.isMoving)
-        {
-            Debug.Log("箭头正在移动中，无法点击");
-            return;
-        }
-        
-        Debug.Log($"点击了 MegaBend 箭头: {arrow.name}");
-        selectedMegaBendArrow = arrow;
-        arrow.StartMoving();
-        totalMoves++;
-        
-        CheckGameState();
-    }
     void OnSegmentedArrowClicked(SegmentedArrow arrow)
     {
         if (arrow.isMoving)
@@ -237,14 +219,14 @@ public class GameManager : MonoBehaviour
         // 检查 MegaBend 箭头
         if (allCompleted)
         {
-            foreach (var arrow in megaBendArrows)
-            {
-                if (arrow.isMoving)
-                {
-                    allCompleted = false;
-                    break;
-                }
-            }
+            // foreach (var arrow in megaBendArrows)
+            // {
+            //     if (arrow.isMoving)
+            //     {
+            //         allCompleted = false;
+            //         break;
+            //     }
+            // }
         }
         
         if (allCompleted)
@@ -285,11 +267,11 @@ public class GameManager : MonoBehaviour
         }
         
         // 重置 MegaBend 箭头
-        foreach (var arrow in megaBendArrows)
-        {
-            arrow.StopAllCoroutines();
-            arrow.isMoving = false;
-        }
+        // foreach (var arrow in megaBendArrows)
+        // {
+        //     arrow.StopAllCoroutines();
+        //     arrow.isMoving = false;
+        // }
     }
     
     /// <summary>

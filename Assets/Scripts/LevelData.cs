@@ -22,14 +22,10 @@ public class ArrowBlockData
 {
     public string id;
     public Vector3 startPosition;
-    public ArrowBlock.ArrowType arrowType;
-    public ArrowBlock.Direction initialDirection;
+    public ArrowBlock.Direction direction;
     
     [Header("模型详细配置")]
     public float startLength = 1.0f;  // 起点段长度
-    public float turnLength = 1.0f;   // 转弯段长度
-    public float tailLength = 0.5f;   // 尾部长度
-    public float thickness = 0.3f;    // 模型粗细
     
     [Header("视觉配置")]
     public Color blockColor = Color.gray;

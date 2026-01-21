@@ -112,13 +112,13 @@ public class ArrowVisualizer : MonoBehaviour
         float angle = 0;
         switch (arrowBlock.currentDirection)
         {
-            case ArrowBlock.Direction.Forward:
+            case ArrowBlock.Direction.Up:
                 angle = 0;
                 break;
             case ArrowBlock.Direction.Right:
                 angle = 90;
                 break;
-            case ArrowBlock.Direction.Back:
+            case ArrowBlock.Direction.Down:
                 angle = 180;
                 break;
             case ArrowBlock.Direction.Left:
@@ -166,13 +166,13 @@ public class ArrowVisualizer : MonoBehaviour
         Vector3 dirVector = Vector3.zero;
         switch (arrowBlock.currentDirection)
         {
-            case ArrowBlock.Direction.Forward:
+            case ArrowBlock.Direction.Up:
                 dirVector = Vector3.forward;
                 break;
             case ArrowBlock.Direction.Right:
                 dirVector = Vector3.right;
                 break;
-            case ArrowBlock.Direction.Back:
+            case ArrowBlock.Direction.Down:
                 dirVector = Vector3.back;
                 break;
             case ArrowBlock.Direction.Left:

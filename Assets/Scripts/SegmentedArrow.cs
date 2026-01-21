@@ -19,8 +19,8 @@ public class SegmentedArrow : MonoBehaviour
     public bool keepInitialRotation = true; // 是否保持初始方向
     
     [Header("箭头类型")]
-    public ArrowBlock.ArrowType arrowType = ArrowBlock.ArrowType.Straight;
-    public ArrowBlock.Direction currentDirection = ArrowBlock.Direction.Forward;
+    // public ArrowBlock.ArrowType arrowType = ArrowBlock.ArrowType.Straight;
+    public ArrowBlock.Direction currentDirection = ArrowBlock.Direction.Up;
     
     [Header("组件引用")]
     public CurvedPathFollower pathFollower;
@@ -121,7 +121,7 @@ public class SegmentedArrow : MonoBehaviour
         
         segments.Add(segment);
     }
-    
+
     /// <summary>
     /// 生成箭头路径
     /// </summary>
@@ -129,68 +129,18 @@ public class SegmentedArrow : MonoBehaviour
     {
         targetPath.Clear();
         targetPath.Add(transform.position);
-        
+
         Vector3 currentPos = transform.position;
         ArrowBlock.Direction currentDir = currentDirection;
-        
-        switch (arrowType)
+
+        // 直线前进
+        for (int i = 1; i <= 5; i++)
         {
-            case ArrowBlock.ArrowType.Straight:
-                // 直线前进
-                for (int i = 1; i <= 5; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * 1f;
-                    targetPath.Add(currentPos);
-                }
-                break;
-                
-            case ArrowBlock.ArrowType.TurnLeft:
-                // 前进后左转
-                for (int i = 1; i <= 3; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * 1f;
-                    targetPath.Add(currentPos);
-                }
-                currentDir = TurnLeft(currentDir);
-                for (int i = 1; i <= 3; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * 1f;
-                    targetPath.Add(currentPos);
-                }
-                break;
-                
-            case ArrowBlock.ArrowType.TurnRight:
-                // 前进后右转
-                for (int i = 1; i <= 3; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * 1f;
-                    targetPath.Add(currentPos);
-                }
-                currentDir = TurnRight(currentDir);
-                for (int i = 1; i <= 3; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * 1f;
-                    targetPath.Add(currentPos);
-                }
-                break;
-                
-            case ArrowBlock.ArrowType.UTurn:
-                // U型转弯
-                currentPos += GetDirectionVector(currentDir) * 1f;
-                targetPath.Add(currentPos);
-                currentDir = TurnLeft(currentDir);
-                currentPos += GetDirectionVector(currentDir) * 1f;
-                targetPath.Add(currentPos);
-                currentDir = TurnLeft(currentDir);
-                for (int i = 1; i <= 2; i++)
-                {
-                    currentPos += GetDirectionVector(currentDir) * 1f;
-                    targetPath.Add(currentPos);
-                }
-                break;
+            currentPos += GetDirectionVector(currentDir) * 1f;
+            targetPath.Add(currentPos);
         }
     }
-    
+
     /// <summary>
     /// 点击箭头，开始移动
     /// </summary>
@@ -299,9 +249,9 @@ public class SegmentedArrow : MonoBehaviour
     {
         switch (dir)
         {
-            case ArrowBlock.Direction.Forward: return Vector3.forward;
+            case ArrowBlock.Direction.Up: return Vector3.forward;
             case ArrowBlock.Direction.Right: return Vector3.right;
-            case ArrowBlock.Direction.Back: return Vector3.back;
+            case ArrowBlock.Direction.Down: return Vector3.back;
             case ArrowBlock.Direction.Left: return Vector3.left;
             default: return Vector3.forward;
         }

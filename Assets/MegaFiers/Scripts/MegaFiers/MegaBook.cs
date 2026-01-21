@@ -129,7 +129,7 @@ namespace MegaFiers
 
 			front.transform.localRotation = Quaternion.Euler(ang);
 
-			// Back cover
+			// Down cover
 			if ( page >= pagecount - 1 )
 				ang.z = 180.0f * (float)turn;
 			else

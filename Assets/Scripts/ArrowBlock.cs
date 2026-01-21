@@ -8,8 +8,8 @@ using System.Collections.Generic;
 public class ArrowBlock : MonoBehaviour
 {
     [Header("箭头配置")]
-    public ArrowType arrowType = ArrowType.Straight;
-    public Direction currentDirection = Direction.Forward;
+    // public ArrowType arrowType = ArrowType.Straight;
+    public Direction currentDirection = Direction.Up;
     
     [Header("移动参数")]
     public float moveSpeed = 5f;
@@ -23,36 +23,21 @@ public class ArrowBlock : MonoBehaviour
     
     private int currentPathIndex = 0;
     private Vector3 targetPosition;
-    private Quaternion targetRotation;
-    private Quaternion initialRotation; // 初始旋转
-    
-    /// <summary>
-    /// 箭头类型枚举
-    /// </summary>
-    public enum ArrowType
-    {
-        Straight,       // 直线箭头
-        TurnLeft,       // 左转箭头
-        TurnRight,      // 右转箭头
-        UTurn,          // U型转弯
-        Custom          // 自定义路径
-    }
     
     /// <summary>
     /// 方向枚举
     /// </summary>
     public enum Direction
     {
-        Forward,
+        Up,
         Right,
-        Back,
+        Down,
         Left
     }
     
     void Start()
     {
         // 保存初始旋转
-        initialRotation = transform.rotation;
         InitializeArrowPath();
     }
     
@@ -64,22 +49,6 @@ public class ArrowBlock : MonoBehaviour
         pathNodes.Clear();
         pathNodes.Add(transform.position);
         
-        // 根据箭头类型生成路径节点
-        switch (arrowType)
-        {
-            case ArrowType.Straight:
-                GenerateStraightPath(3); // 默认3格长度
-                break;
-            case ArrowType.TurnLeft:
-                GenerateTurnPath(true);
-                break;
-            case ArrowType.TurnRight:
-                GenerateTurnPath(false);
-                break;
-            case ArrowType.UTurn:
-                GenerateUTurnPath();
-                break;
-        }
     }
     
     /// <summary>
@@ -166,24 +135,24 @@ public class ArrowBlock : MonoBehaviour
             targetPosition = pathNodes[currentPathIndex];
             
             // 如果不保持初始方向，才计算目标旋转
-            if (!keepInitialDirection)
-            {
-                // 计算移动方向和目标旋转
-                Vector3 moveDirection = (targetPosition - transform.position).normalized;
-                if (moveDirection != Vector3.zero)
-                {
-                    targetRotation = Quaternion.LookRotation(moveDirection);
-                }
-                
-                // 先旋转到目标方向
-                yield return StartCoroutine(RotateToTarget());
-            }
-            else
-            {
-                // 保持初始旋转
-                targetRotation = initialRotation;
-                transform.rotation = initialRotation;
-            }
+            // if (!keepInitialDirection)
+            // {
+            //     // 计算移动方向和目标旋转
+            //     Vector3 moveDirection = (targetPosition - transform.position).normalized;
+            //     if (moveDirection != Vector3.zero)
+            //     {
+            //         targetRotation = Quaternion.LookRotation(moveDirection);
+            //     }
+            //     
+            //     // 先旋转到目标方向
+            //     yield return StartCoroutine(RotateToTarget());
+            // }
+            // else
+            // {
+            //     // 保持初始旋转
+            //     targetRotation = initialRotation;
+            //     transform.rotation = initialRotation;
+            // }
             
             // 移动到目标位置
             yield return StartCoroutine(MoveToTarget());
@@ -191,23 +160,6 @@ public class ArrowBlock : MonoBehaviour
         
         isMoving = false;
         OnPathCompleted();
-    }
-    
-    /// <summary>
-    /// 旋转到目标角度
-    /// </summary>
-    IEnumerator RotateToTarget()
-    {
-        while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
-        {
-            transform.rotation = Quaternion.RotateTowards(
-                transform.rotation, 
-                targetRotation, 
-                rotationSpeed * Time.deltaTime
-            );
-            yield return null;
-        }
-        transform.rotation = targetRotation;
     }
     
     /// <summary>
@@ -243,9 +195,9 @@ public class ArrowBlock : MonoBehaviour
     {
         switch (dir)
         {
-            case Direction.Forward: return Vector3.forward;
+            case Direction.Up: return Vector3.forward;
             case Direction.Right: return Vector3.right;
-            case Direction.Back: return Vector3.back;
+            case Direction.Down: return Vector3.back;
             case Direction.Left: return Vector3.left;
             default: return Vector3.forward;
         }

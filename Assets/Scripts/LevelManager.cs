@@ -65,8 +65,8 @@ public class LevelManager : MonoBehaviour
         
         if (arrow != null)
         {
-            arrow.arrowType = data.arrowType;
-            arrow.currentDirection = data.initialDirection;
+            // arrow.arrowType = data.arrowType;
+            arrow.currentDirection = data.direction;
             
             // 如果有自定义路径，使用自定义路径
             if (data.customPath != null && data.customPath.Count > 0)
@@ -114,8 +114,8 @@ public class LevelManager : MonoBehaviour
         level1.arrowBlocks.Add(new ArrowBlockData
         {
             startPosition = new Vector3(0, 0, 0),
-            arrowType = ArrowBlock.ArrowType.Straight,
-            initialDirection = ArrowBlock.Direction.Forward,
+            // arrowType = ArrowBlock.ArrowType.Straight,
+            direction = ArrowBlock.Direction.Up,
             blockColor = Color.blue
         });
         
@@ -123,8 +123,8 @@ public class LevelManager : MonoBehaviour
         level1.arrowBlocks.Add(new ArrowBlockData
         {
             startPosition = new Vector3(2, 0, 0),
-            arrowType = ArrowBlock.ArrowType.TurnLeft,
-            initialDirection = ArrowBlock.Direction.Forward,
+            // arrowType = ArrowBlock.ArrowType.TurnLeft,
+            direction = ArrowBlock.Direction.Up,
             blockColor = Color.red
         });
         
@@ -132,8 +132,8 @@ public class LevelManager : MonoBehaviour
         level1.arrowBlocks.Add(new ArrowBlockData
         {
             startPosition = new Vector3(-2, 0, 0),
-            arrowType = ArrowBlock.ArrowType.TurnRight,
-            initialDirection = ArrowBlock.Direction.Forward,
+            // arrowType = ArrowBlock.ArrowType.TurnRight,
+            direction = ArrowBlock.Direction.Up,
             blockColor = Color.green
         });
         
