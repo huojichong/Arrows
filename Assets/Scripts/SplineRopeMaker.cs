@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -133,6 +134,7 @@ public class SplineRopeMaker : MonoBehaviour
         mesh.RecalculateNormals();                    // 重新计算法线（用于光照）
         mesh.RecalculateBounds();                     // 重新计算边界框
 
+        AssetDatabase.CreateAsset(mesh, "Assets/mesh.asset");
         // 3. 配置蒙皮网格渲染器
         SkinnedMeshRenderer smr = GetComponent<SkinnedMeshRenderer>();
         smr.sharedMesh = mesh;                        // 设置共享网格

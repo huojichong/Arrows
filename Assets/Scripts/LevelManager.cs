@@ -36,17 +36,20 @@ public class LevelManager : MonoBehaviour
         currentLevelIndex = levelIndex;
         LevelData level = levels[levelIndex];
         
-        // 设置相机
-        Camera.main.transform.position = level.cameraPosition;
-        Camera.main.transform.eulerAngles = level.cameraRotation;
+        // // 设置相机
+        // Camera.main.transform.position = level.cameraPosition;
+        // Camera.main.transform.eulerAngles = level.cameraRotation;
         
         // 生成箭头块
-        foreach (var arrowData in level.arrowBlocks)
-        {
-            CreateArrowBlock(arrowData);
-        }
+        // foreach (var arrowData in level.arrowBlocks)
+        // {
+        //     CreateArrowBlock(arrowData);
+        // }
         
-        Debug.Log($"加载关卡: {level.levelName}");
+        // Debug.Log($"加载关卡: {level.levelName}");
+        
+        
+        
     }
     
     /// <summary>
@@ -71,7 +74,10 @@ public class LevelManager : MonoBehaviour
             // 如果有自定义路径，使用自定义路径
             if (data.customPath != null && data.customPath.Count > 0)
             {
-                arrow.pathNodes = new List<Vector3>(data.customPath);
+                foreach (var path in data.customPath)
+                {
+                    arrow.pathNodes.Add(new Vector3(path.x, 0,path.y));   
+                }
             }
             
             // 设置颜色
@@ -102,42 +108,7 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     public void CreateExampleLevel()
     {
-        LevelData level1 = new LevelData
-        {
-            levelNumber = 1,
-            levelName = "第一关 - 基础",
-            cameraPosition = new Vector3(0, 10, -10),
-            cameraRotation = new Vector3(45, 0, 0)
-        };
         
-        // 添加一个直线箭头
-        level1.arrowBlocks.Add(new ArrowBlockData
-        {
-            startPosition = new Vector3(0, 0, 0),
-            // arrowType = ArrowBlock.ArrowType.Straight,
-            direction = ArrowBlock.Direction.Up,
-            blockColor = Color.blue
-        });
-        
-        // 添加一个左转箭头
-        level1.arrowBlocks.Add(new ArrowBlockData
-        {
-            startPosition = new Vector3(2, 0, 0),
-            // arrowType = ArrowBlock.ArrowType.TurnLeft,
-            direction = ArrowBlock.Direction.Up,
-            blockColor = Color.red
-        });
-        
-        // 添加一个右转箭头
-        level1.arrowBlocks.Add(new ArrowBlockData
-        {
-            startPosition = new Vector3(-2, 0, 0),
-            // arrowType = ArrowBlock.ArrowType.TurnRight,
-            direction = ArrowBlock.Direction.Up,
-            blockColor = Color.green
-        });
-        
-        levels.Add(level1);
         Debug.Log("创建示例关卡完成！");
         LoadLevel(0);
     }

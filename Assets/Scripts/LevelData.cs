@@ -1,10 +1,11 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// 关卡数据配置
 /// </summary>
-[System.Serializable]
+[Serializable]
 public class LevelData
 {
     public int levelNumber;
@@ -17,18 +18,18 @@ public class LevelData
 /// <summary>
 /// 单个箭头块的数据
 /// </summary>
-[System.Serializable]
+[Serializable]
 public class ArrowBlockData
 {
     public string id;
     public Vector3 startPosition;
-    public ArrowBlock.Direction direction;
+    public Vector2Int direction;
     
     [Header("模型详细配置")]
     public float startLength = 1.0f;  // 起点段长度
     
     [Header("视觉配置")]
     public Color blockColor = Color.gray;
-    public List<Vector3> customPath;  // 自定义路径点
+    public List<Vector2Int> customPath;  // 自定义路径点
 }
 

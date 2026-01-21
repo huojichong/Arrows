@@ -20,7 +20,7 @@ public class SegmentedArrow : MonoBehaviour
     
     [Header("箭头类型")]
     // public ArrowBlock.ArrowType arrowType = ArrowBlock.ArrowType.Straight;
-    public ArrowBlock.Direction currentDirection = ArrowBlock.Direction.Up;
+    public Vector2Int currentDirection = Vector2Int.up;
     
     [Header("组件引用")]
     public CurvedPathFollower pathFollower;
@@ -131,7 +131,7 @@ public class SegmentedArrow : MonoBehaviour
         targetPath.Add(transform.position);
 
         Vector3 currentPos = transform.position;
-        ArrowBlock.Direction currentDir = currentDirection;
+        var currentDir = currentDirection;
 
         // 直线前进
         for (int i = 1; i <= 5; i++)
@@ -245,37 +245,14 @@ public class SegmentedArrow : MonoBehaviour
     /// <summary>
     /// 获取方向向量
     /// </summary>
-    Vector3 GetDirectionVector(ArrowBlock.Direction dir)
+    Vector3 GetDirectionVector(Vector2Int dir)
     {
-        switch (dir)
-        {
-            case ArrowBlock.Direction.Up: return Vector3.forward;
-            case ArrowBlock.Direction.Right: return Vector3.right;
-            case ArrowBlock.Direction.Down: return Vector3.back;
-            case ArrowBlock.Direction.Left: return Vector3.left;
-            default: return Vector3.forward;
-        }
+        return new Vector3(dir.x, 0, dir.y);
     }
     
     Vector3 GetDirectionVector()
     {
         return GetDirectionVector(currentDirection);
-    }
-    
-    /// <summary>
-    /// 向左转
-    /// </summary>
-    ArrowBlock.Direction TurnLeft(ArrowBlock.Direction dir)
-    {
-        return (ArrowBlock.Direction)(((int)dir + 3) % 4);
-    }
-    
-    /// <summary>
-    /// 向右转
-    /// </summary>
-    ArrowBlock.Direction TurnRight(ArrowBlock.Direction dir)
-    {
-        return (ArrowBlock.Direction)(((int)dir + 1) % 4);
     }
     
     /// <summary>
