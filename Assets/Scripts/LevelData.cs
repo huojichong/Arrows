@@ -25,11 +25,8 @@ public class ArrowBlockData
     public Vector3 startPosition;
     public Vector2Int direction;
     
-    [Header("模型详细配置")]
-    public float startLength = 1.0f;  // 起点段长度
-    
     [Header("视觉配置")]
     public Color blockColor = Color.gray;
-    public List<Vector2Int> customPath;  // 自定义路径点
+    public List<Vector3> customPath;  // 自定义路径点
 }
 

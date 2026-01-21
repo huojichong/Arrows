@@ -33,7 +33,7 @@ public class GridRopeFollower : MonoBehaviour
         demoWaypoints.Add(p);
 
         ropeController.SetWaypoints(demoWaypoints);
-        ropeController.isMoving = autoMove;
+        // ropeController.isMoving = autoMove;
     }
 
     void Update()

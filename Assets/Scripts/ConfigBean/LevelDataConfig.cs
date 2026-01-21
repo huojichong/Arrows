@@ -24,7 +24,7 @@ namespace ConfigBean
         public string id;
         public SnakeDirection direction;
         
-        public Color blockColor = Color.gray;
+        public string blockColor = "";
         public List<SnakePos> segments;  // 自定义路径点
     }
     
