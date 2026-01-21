@@ -71,9 +71,11 @@ public class SplineRopeController : MonoBehaviour
         if (isMoving)
         {
             currentDistance += moveSpeed * Time.deltaTime;
-            
+        
             // 每一帧更新骨骼位置和旋转
             UpdateBones();
+
+            // isMoving = false;
         }
         
     }
@@ -212,7 +214,7 @@ public class SplineRopeController : MonoBehaviour
     /// <summary>
     /// 计算并应用骨骼的位置和旋转
     /// </summary>
-    void UpdateBones()
+    public void UpdateBones()
     {
         if (bones == null || bones.Count == 0 || splineWeights.Count == 0) return;
 

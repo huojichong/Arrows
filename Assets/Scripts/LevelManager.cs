@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using DefaultNamespace;
 using UnityEngine;
 
@@ -32,20 +35,33 @@ public class LevelManager : MonoBehaviour
         ClearCurrentLevel();
         
         currentLevelIndex = levelIndex;
+        StartCoroutine(CreateSnakeCor());
+    }
+
+    private IEnumerator CreateSnakeCor()
+    {
         var data = LevelDataReader.LoadLevelData(0);
         foreach (var blockData in data.arrowBlocks)
         {
+            yield return new WaitForEndOfFrame();
             CreateArrowBlock(blockData);
+            // yield break;
         }
     }
-    
+
     /// <summary>
     /// 创建箭头块
     /// </summary>
     GameObject CreateArrowBlock(ArrowBlockData data)
     {
         var splineRopeController = Instantiate(arrowBlockPrefab).GetComponent<SplineRopeController>();
-        splineRopeController.SetWaypoints(data.customPath);
+        var path = new List<Vector3>();
+        var endPos = data.customPath.Last() + new Vector3(data.direction.x, 0, data.direction.y) * 10;
+        path.AddRange(data.customPath);
+        path.Add(endPos);
+        // 延长起点坐标
+        splineRopeController.SetWaypoints(path);
+        
         splineRopeController.baseLength = data.pathLength;
         splineRopeController.currentDistance = data.pathLength;
         splineRopeController.isMoving = true;

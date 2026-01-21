@@ -908,7 +908,7 @@ MonoBehaviour:
   stretchMultiplier: 1
   moveSpeed: 2
   isMoving: 0
-  currentDistance: 56.077026
+  currentDistance: 0
   curvatureSensitivity: 8
   positionSmoothing: 0.1
   waypoints:
