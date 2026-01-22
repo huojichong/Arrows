@@ -3,18 +3,18 @@ using Gesture.Handlers;
 using UnityEngine;
 
 
-public class DragPathHandler : IGestureHandler
+public class GridDragPathHandler : IGestureHandler
 {
-    public System.Action<Vector2, Vector2> OnDragPath;
+    public System.Action<Vector2Int, Vector2Int> OnDragPath;
 
     public void OnDrag(SingleFingerGestureContext ctx)
     {
-        Vector2 from = new Vector2(
+        Vector2Int from = new Vector2Int(
             Mathf.RoundToInt(ctx.worldDown.x),
             Mathf.RoundToInt(ctx.worldDown.z)
         );
 
-        Vector2 to = new Vector2(
+        Vector2Int to = new Vector2Int(
             Mathf.RoundToInt(ctx.worldCurrent.x),
             Mathf.RoundToInt(ctx.worldCurrent.z)
         );
