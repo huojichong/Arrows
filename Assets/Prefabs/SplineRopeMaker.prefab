@@ -905,12 +905,14 @@ MonoBehaviour:
   - {fileID: 1968830895878124239}
   - {fileID: 3186326936942895989}
   baseLength: 1
+  initialDistanceOffset: 0.1
   stretchMultiplier: 1
-  moveSpeed: 2
+  moveSpeed: 10
   isMoving: 0
   currentDistance: 0
-  curvatureSensitivity: 8
+  curvatureSensitivity: 4.81
   positionSmoothing: 0.1
+  rotationSmoothing: 0.3
   waypoints:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 3}

@@ -21,8 +21,11 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     [Tooltip("绳子的骨骼列表，头部为 index 0")]
     public List<Transform> bones;
     
-    [Tooltip("绳子在不拉伸时的基础长度")]
+    [Tooltip("绳子在路径上的固定长度")]
     public float baseLength = 2.0f;
+    
+    [Tooltip("初始距离偏移量，用于确保绳子完整显示")]
+    public float initialDistanceOffset = 0.1f;
     
     [Range(0.1f, 10f)]
     [Tooltip("拉伸倍率，用于动态改变绳子长度")]
@@ -39,13 +42,17 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     public float currentDistance = 0f;
 
     [Header("自适应分布与稳定性")]
-    [Range(0, 20f)]
+    [Range(0, 30f)]
     [Tooltip("曲率敏感度：值越大，拐弯处的骨骼越密集，直线处越稀疏")]
-    public float curvatureSensitivity = 10.0f;
+    public float curvatureSensitivity = 15.0f;
     
     [Range(0f, 1f)]
     [Tooltip("位置平滑系数：用于消除出弯时的微小抖动，0为禁用")]
     public float positionSmoothing = 0.1f;
+    
+    [Range(0f, 1f)]
+    [Tooltip("旋转平滑系数：用于消除急转弯处的旋转扭曲，0为禁用")]
+    public float rotationSmoothing = 0.3f;
 
     [Header("路径点 (世界空间)")]
     public List<Vector3> waypoints = new List<Vector3>();
@@ -54,7 +61,7 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     private List<float> splineDistances = new List<float>();
     private List<float> splineWeights = new List<float>();
     private float totalPathWeight = 0;
-    private const int DENSITY_SAMPLES_PER_UNIT = 10; // 每单位长度的采样点密度
+    private const int DENSITY_SAMPLES_PER_UNIT = 20; // 每单位长度的采样点密度（提高精度）
 
     void Awake()
     {
@@ -98,7 +105,7 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
         waypoints = points;
         UpdateSplineFromWaypoints();
         if (resetDistance)
-            currentDistance = baseLength * stretchMultiplier;
+            currentDistance = baseLength + initialDistanceOffset;
     }
 
     /// <summary>
@@ -182,7 +189,7 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     }
 
     /// <summary>
-    /// 预计算整条路径的“疏密权重图”。
+    /// 预计算整条路径的"疏密权重图"。
     /// 核心逻辑：在转弯半径处采样更高权重，使骨骼自动聚集在弯道。
     /// 使用静态图代替动态采样，彻底消除移动时的数值抖动。
     /// </summary>
@@ -191,34 +198,35 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
         splineDistances.Clear();
         splineWeights.Clear();
         totalPathWeight = 0;
-
+    
         float fullLength = splineContainer.CalculateLength();
-        // 根据总长度决定采样精度
-        int sampleCount = Mathf.Max(20, Mathf.CeilToInt(fullLength * DENSITY_SAMPLES_PER_UNIT));
-
+        // 根据总长度决定采样精度（提高采样密度以更准确捕捉曲率）
+        int sampleCount = Mathf.Max(30, Mathf.CeilToInt(fullLength * DENSITY_SAMPLES_PER_UNIT));
+    
         for (int i = 0; i <= sampleCount; i++)
         {
             float d = (i / (float)sampleCount) * fullLength;
             float weight = 1.0f; // 基础权重
-
+    
             // 评估当前位置的曲率
             float normT = SplineUtility.GetNormalizedInterpolation(splineContainer.Spline, d, PathIndexUnit.Distance);
             splineContainer.Evaluate(normT, out _, out float3 tangent, out _);
-            
-            // 向后采样一小段计算方向变化
-            float nextD = Mathf.Min(d + 0.1f, fullLength);
+                
+            // 缩短采样步长以更精确捕捉急转弯（从0.1减小到0.05）
+            float nextD = Mathf.Min(d + 0.05f, fullLength);
             float nextNormT = SplineUtility.GetNormalizedInterpolation(splineContainer.Spline, nextD, PathIndexUnit.Distance);
             splineContainer.Evaluate(nextNormT, out _, out float3 nextTangent, out _);
-            
-            // 夹角越大，权重越高
-            weight += Vector3.Angle(tangent, nextTangent) * curvatureSensitivity;
-
+                
+            // 夹角越大，权重越高（使用指数增强曲率敏感度）
+            float angleDiff = Vector3.Angle(tangent, nextTangent);
+            weight += Mathf.Pow(angleDiff, 1.5f) * curvatureSensitivity;
+    
             splineDistances.Add(d);
             splineWeights.Add(weight);
             totalPathWeight += weight;
         }
     }
-
+    
     /// <summary>
     /// 计算并应用骨骼的位置和旋转
     /// </summary>
@@ -308,7 +316,8 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
         Vector3 worldPos = splineContainer.transform.TransformPoint(pos);
         
         // 应用位置平滑 (positionSmoothing)，消除由于数值计算导致的微小高频抖动
-        if (positionSmoothing > 0 && Application.isPlaying)
+        // 仅在移动时启用平滑，初始化时立即定位
+        if (positionSmoothing > 0 && Application.isPlaying && isMoving)
             bones[boneIndex].position = Vector3.Lerp(bones[boneIndex].position, worldPos, 1f - positionSmoothing);
         else
             bones[boneIndex].position = worldPos;
@@ -317,8 +326,20 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
         if (math.lengthsq(tan) > 0.001f)
         {
             Vector3 forward = splineContainer.transform.TransformDirection(tan);
-            // 锁定 Up 轴为世界坐标的向上，防止绳子自身发生扭转 (Twist)
-            bones[boneIndex].rotation = Quaternion.LookRotation(forward, Vector3.up);
+            
+            // 计算目标旋转（锁定 Up 轴为世界坐标向上）
+            Quaternion targetRotation = Quaternion.LookRotation(forward, Vector3.up);
+            
+            // 应用旋转平滑，减少急转弯处的扭曲
+            // 初始化时立即应用，移动时启用平滑过渡
+            if (rotationSmoothing > 0 && Application.isPlaying && isMoving)
+            {
+                bones[boneIndex].rotation = Quaternion.Slerp(bones[boneIndex].rotation, targetRotation, 1f - rotationSmoothing);
+            }
+            else
+            {
+                bones[boneIndex].rotation = targetRotation;
+            }
         }
     }
 
@@ -350,7 +371,8 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
         this.arrowData = data;
         
         this.baseLength = data.pathLength;
-        this.currentDistance = data.pathLength + 0.1f;
+        // 添加偏移量，确保绳子大部分显示在路径上（避免尾部在起点堆积）
+        this.currentDistance = data.pathLength + initialDistanceOffset;
     }
     
     public Transform Transform => this.transform;
@@ -374,14 +396,30 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     public void InitArrow()
     {
         isMoving = false;
-        // 初始阶段更新骨骼
+        // 禁用位置平滑，确保初始化时骨骼立即到位
+        float originalSmoothing = positionSmoothing;
+        positionSmoothing = 0;
+        
+        // 初始阶段更新骨骼，立即定位（位置和旋转）
         UpdateBones();
-        StartCoroutine(NextUpdate());
+        
+        // 强制再次更新，确保旋转完全应用
+        // 某些情况下 SkinnedMeshRenderer 会在第一帧覆盖骨骼旋转
+        UpdateBones();
+        
+        // 延迟一帧再次确认，彻底解决 SkinnedMeshRenderer 的初始化问题
+        StartCoroutine(DelayedBoneUpdate(originalSmoothing));
     }
-
-    private IEnumerator NextUpdate()
+    
+    private IEnumerator DelayedBoneUpdate(float originalSmoothing)
     {
+        // 等待一帧，让 SkinnedMeshRenderer 完成内部初始化
         yield return null;
-        // UpdateBones();
+        
+        // 最终更新，确保所有骨骼位置和旋转都正确
+        UpdateBones();
+        
+        // 恢复平滑设置
+        positionSmoothing = originalSmoothing;
     }
 }
