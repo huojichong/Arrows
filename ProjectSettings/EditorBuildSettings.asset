@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/SplinesScene.unity
+    guid: 47dcd9030f542418e8dc514ba5e549f4
   m_configObjects: {}

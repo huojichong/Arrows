@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Gesture;
+using Gesture.Handlers;
 
 /// <summary>
 /// 游戏管理器，负责点击检测、游戏流程控制
@@ -23,6 +25,9 @@ public class GameManager : MonoBehaviour
     private SegmentedArrow selectedSegmentedArrow = null;
     // private MegaBendArrow selectedMegaBendArrow = null;
     
+    
+    [SerializeField]
+    private GestureManager gestureManager;
     void Start()
     {
         if (mainCamera == null)
@@ -35,10 +40,28 @@ public class GameManager : MonoBehaviour
         FindAllSegmentedArrows();
         FindAllMegaBendArrows();
         
-     
+        var click = new GridClickHandler();
         
+        click.OnGridClicked += OnGridClicked;
+        var drag  = new GridDragPathHandler();
+
+        var composite = new CompositeGestureHandler(click, drag);
+
+        gestureManager.SingleFingerHandler = composite;
+        
+        gestureManager.OnTwoFingerUpdate += ctx =>
+        {
+            // 双指操作
+            // Camera.main.fieldOfView -= ctx.deltaDistance * 0.01f;
+            // Camera.main.transform.Rotate(Vector3.up, ctx.deltaAngle);
+        };
     }
-    
+
+    private void OnGridClicked(Vector2Int obj)
+    {
+        Debug.Log("onGridClicked:" + obj);
+    }
+
     void Update()
     {
         HandleInput();
