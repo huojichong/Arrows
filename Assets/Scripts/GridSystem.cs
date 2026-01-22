@@ -16,26 +16,15 @@ public class GridSystem : MonoBehaviour
     public Color gridColor = Color.white;
     
     // 网格数据存储：位置 -> 箭头块
-    private Dictionary<Vector3Int, ArrowBlock> gridOccupancy = new Dictionary<Vector3Int, ArrowBlock>();
-    
-    void Start()
-    {
-        InitializeGrid();
-    }
+    private Dictionary<Vector3Int, IArrow> gridOccupancy = new Dictionary<Vector3Int, IArrow>();
     
     /// <summary>
     /// 初始化网格系统
     /// </summary>
-    void InitializeGrid()
+    public void InitializeGrid()
     {
         gridOccupancy.Clear();
         
-        // 查找所有箭头块并注册到网格
-        ArrowBlock[] arrows = FindObjectsOfType<ArrowBlock>();
-        foreach (var arrow in arrows)
-        {
-            RegisterArrowBlock(arrow);
-        }
     }
     
     /// <summary>
@@ -62,39 +51,54 @@ public class GridSystem : MonoBehaviour
             gridPosition.z * gridSize
         );
     }
-    
+
     /// <summary>
     /// 注册箭头块到网格
     /// </summary>
-    public void RegisterArrowBlock(ArrowBlock arrow)
+    public void RegisterArrowBlock(IArrow arrow)
     {
-        Vector3Int gridPos = WorldToGrid(arrow.transform.position);
-        
-        if (gridOccupancy.ContainsKey(gridPos))
+        foreach (var data in arrow.arrowData.customPath)
         {
-            Debug.LogWarning($"网格位置 {gridPos} 已被占用！");
+            var dataInt = GetGridPosition(data);
+            if (gridOccupancy.ContainsKey(dataInt))
+            {
+                Debug.LogWarning($"网格位置 {dataInt} 已被占用！");
+            }
+
+            gridOccupancy[dataInt] = arrow;
         }
-        
-        gridOccupancy[gridPos] = arrow;
     }
     
+    private Vector3Int GetGridPosition(Vector3 data)
+    {
+        var dataInt = new Vector3Int(
+            Mathf.RoundToInt(data.x),
+            Mathf.RoundToInt(data.y),
+            Mathf.RoundToInt(data.z)
+        );
+        return dataInt;
+    }
+
     /// <summary>
     /// 从网格注销箭头块
     /// </summary>
-    public void UnregisterArrowBlock(ArrowBlock arrow)
+    public void UnregisterArrowBlock(IArrow arrow)
     {
-        Vector3Int gridPos = WorldToGrid(arrow.transform.position);
-        
-        if (gridOccupancy.ContainsKey(gridPos) && gridOccupancy[gridPos] == arrow)
+        foreach (var data in arrow.arrowData.customPath)
         {
-            gridOccupancy.Remove(gridPos);
+            var dataInt = GetGridPosition(data);
+            if (gridOccupancy.ContainsKey(dataInt) && gridOccupancy[dataInt] == arrow)
+            {
+                Debug.LogWarning($"网格位置 {dataInt} 已被占用！");
+                gridOccupancy.Remove(dataInt);
+            }
         }
     }
     
     /// <summary>
     /// 更新箭头块在网格中的位置
     /// </summary>
-    public void UpdateArrowBlockPosition(ArrowBlock arrow, Vector3 oldPosition, Vector3 newPosition)
+    public void UpdateArrowBlockPosition(IArrow arrow, Vector3 oldPosition, Vector3 newPosition)
     {
         Vector3Int oldGridPos = WorldToGrid(oldPosition);
         Vector3Int newGridPos = WorldToGrid(newPosition);
@@ -136,19 +140,15 @@ public class GridSystem : MonoBehaviour
     /// <summary>
     /// 获取指定网格位置的箭头块
     /// </summary>
-    public ArrowBlock GetArrowBlockAt(Vector3Int gridPosition)
+    public IArrow GetArrowBlockAt(Vector3Int gridPosition)
     {
-        if (gridOccupancy.TryGetValue(gridPosition, out ArrowBlock arrow))
-        {
-            return arrow;
-        }
-        return null;
+        return gridOccupancy.GetValueOrDefault(gridPosition,null);
     }
     
     /// <summary>
     /// 获取指定世界坐标的箭头块
     /// </summary>
-    public ArrowBlock GetArrowBlockAt(Vector3 worldPosition)
+    public IArrow GetArrowBlockAt(Vector3 worldPosition)
     {
         Vector3Int gridPos = WorldToGrid(worldPosition);
         return GetArrowBlockAt(gridPos);
@@ -162,7 +162,7 @@ public class GridSystem : MonoBehaviour
         foreach (var point in path)
         {
             Vector3Int gridPos = WorldToGrid(point);
-            if (gridOccupancy.TryGetValue(gridPos, out ArrowBlock occupyingArrow))
+            if (gridOccupancy.TryGetValue(gridPos, out IArrow occupyingArrow))
             {
                 if (occupyingArrow != movingArrow)
                 {

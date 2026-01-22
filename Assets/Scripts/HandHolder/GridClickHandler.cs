@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class GridClickHandler : IGestureHandler
 {
-    public System.Action<Vector2Int> OnGridClicked;
+    public System.Action<Vector3Int> OnGridClicked;
 
     public void OnClick(SingleFingerGestureContext ctx)
     {
-        Vector2Int grid = new Vector2Int(
+        Vector3Int grid = new Vector3Int(
             Mathf.RoundToInt(ctx.worldDown.x),
+            0,
             Mathf.RoundToInt(ctx.worldDown.z)
         );
 

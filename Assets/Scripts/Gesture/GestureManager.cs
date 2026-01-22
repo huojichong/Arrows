@@ -21,8 +21,8 @@ public class GestureManager : MonoBehaviour
     readonly List<PointerState> _pointers = new();
     Plane _plane;
 
-    SingleFingerState _single;
-    TwoFingerState _double;
+    SingleFingerState _single = new SingleFingerState();
+    TwoFingerState _double = new TwoFingerState();
 
     void Awake()
     {

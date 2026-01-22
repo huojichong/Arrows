@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine.Splines;
 /// 基于 Unity Spline 的可伸缩弯曲绳子控制器。
 /// 特点：支持固定半径 90 度圆角、骨骼自适应分布（弯道密集、直线稀疏）、防抖动处理。
 /// </summary>
-public class SplineRopeSnake : MonoBehaviour
+public class SplineRopeSnake : MonoBehaviour, IArrow
 {
     [Header("Spline 核心配置")]
     [Tooltip("用于渲染和路径计算的 Spline 容器")]
@@ -78,6 +79,13 @@ public class SplineRopeSnake : MonoBehaviour
             // isMoving = false;
         }
         
+    }
+
+    public void StartMoving(float distance)
+    {
+        if (isMoving)
+            return;
+        isMoving = true;
     }
 
     /// <summary>
@@ -331,5 +339,49 @@ public class SplineRopeSnake : MonoBehaviour
     {
         waypoints.Add(point);
         UpdateSplineFromWaypoints();
+    }
+
+    
+    public IArrowData arrowData { get; set; }
+    
+    public void SetData(IArrowData arrowData)
+    {
+        var data = arrowData as ArrowData;
+        this.arrowData = data;
+        
+        this.baseLength = data.pathLength;
+        this.currentDistance = data.pathLength + 0.1f;
+    }
+    
+    public Transform Transform => this.transform;
+    
+    bool IArrow.IsMoving
+    {
+        get => isMoving;
+    }
+
+    public void Reset()
+    {
+        StopAllCoroutines();
+        isMoving = false;
+    }
+
+    public void MoveOut()
+    {
+        isMoving = true;
+    }
+
+    public void InitArrow()
+    {
+        isMoving = false;
+        // 初始阶段更新骨骼
+        UpdateBones();
+        StartCoroutine(NextUpdate());
+    }
+
+    private IEnumerator NextUpdate()
+    {
+        yield return null;
+        // UpdateBones();
     }
 }

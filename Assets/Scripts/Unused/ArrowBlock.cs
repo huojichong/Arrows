@@ -42,17 +42,17 @@ public class ArrowBlock : MonoBehaviour
         
     }
     
-    
-    /// <summary>
-    /// 点击箭头时触发移动
-    /// </summary>
-    public void OnArrowClicked()
-    {
-        if (!isMoving && pathNodes.Count > 1)
-        {
-            StartCoroutine(MoveAlongPath());
-        }
-    }
+    //
+    // /// <summary>
+    // /// 点击箭头时触发移动
+    // /// </summary>
+    // public void OnArrowClicked()
+    // {
+    //     if (!isMoving && pathNodes.Count > 1)
+    //     {
+    //         StartCoroutine(MoveAlongPath());
+    //     }
+    // }
     
     /// <summary>
     /// 沿路径移动协程

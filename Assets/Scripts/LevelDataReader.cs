@@ -18,11 +18,11 @@ namespace DefaultNamespace
             
             data.levelName = dataConfig.levelName;
             data.levelNumber = dataConfig.levelNumber;
-            data.arrowBlocks = new List<ArrowBlockData>();
+            data.arrowBlocks = new List<ArrowData>();
 
             foreach (var snakeDataConfig in dataConfig.snakes)
             {
-                var arrowBlockData = new ArrowBlockData();
+                var arrowBlockData = new ArrowData();
                 arrowBlockData.id = snakeDataConfig.id;
                 arrowBlockData.direction = new Vector2Int(snakeDataConfig.direction.dr, snakeDataConfig.direction.dc);
 

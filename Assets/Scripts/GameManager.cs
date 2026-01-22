@@ -1,5 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using DefaultNamespace;
 using Gesture;
 using Gesture.Handlers;
 
@@ -17,17 +20,18 @@ public class GameManager : MonoBehaviour
     public int totalMoves = 0;
     
     [Header("引用")]
-    public List<ArrowBlock> arrowBlocks = new List<ArrowBlock>();
-    public List<SegmentedArrow> segmentedArrows = new List<SegmentedArrow>();
-    // public List<MegaBendArrow> megaBendArrows = new List<MegaBendArrow>();
+    public List<IArrow> arrowBlocks = new List<IArrow>();
     
-    private ArrowBlock selectedArrow = null;
-    private SegmentedArrow selectedSegmentedArrow = null;
-    // private MegaBendArrow selectedMegaBendArrow = null;
-    
+    [Header("关卡配置")]
+    public GameObject arrowBlockPrefab;
+
     
     [SerializeField]
     private GestureManager gestureManager;
+    
+    [SerializeField]
+    private GridSystem gridSystem;
+    
     void Start()
     {
         if (mainCamera == null)
@@ -36,10 +40,21 @@ public class GameManager : MonoBehaviour
         }
         
         // 查找场景中所有箭头块
-        FindAllArrowBlocks();
-        FindAllSegmentedArrows();
-        FindAllMegaBendArrows();
+        gridSystem.InitializeGrid();
+        InitGestureManager();
+
+        InitArrowData();
+    }
+
+    private void InitArrowData()
+    {
+        ClearCurrentLevel();
         
+        StartCoroutine(CreateSnakeCor());
+    }
+
+    private void InitGestureManager()
+    {
         var click = new GridClickHandler();
         
         click.OnGridClicked += OnGridClicked;
@@ -51,161 +66,79 @@ public class GameManager : MonoBehaviour
         
         gestureManager.OnTwoFingerUpdate += ctx =>
         {
-            // 双指操作
-            // Camera.main.fieldOfView -= ctx.deltaDistance * 0.01f;
-            // Camera.main.transform.Rotate(Vector3.up, ctx.deltaAngle);
         };
     }
+    
 
-    private void OnGridClicked(Vector2Int obj)
+    private void OnGridClicked(Vector3Int obj)
     {
         Debug.Log("onGridClicked:" + obj);
-    }
+        var arrow = gridSystem.GetArrowBlockAt(obj);
 
-    void Update()
-    {
-        HandleInput();
-    }
-    
-    /// <summary>
-    /// 处理输入
-    /// </summary>
-    void HandleInput()
-    {
-        // 鼠标点击检测
-        if (Input.GetMouseButtonDown(0))
+        if (arrow == null)
         {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            
-            if (Physics.Raycast(ray, out hit, 100f, arrowLayer))
-            {
-                // 先检查是否是 MegaBend 箭头
-                // MegaBendArrow megaBendArrow = hit.collider.GetComponent<MegaBendArrow>();
-                // if (megaBendArrow != null)
-                // {
-                //     OnMegaBendArrowClicked(megaBendArrow);
-                //     return;
-                // }
-                
-                // 再检查是否是分段箭头
-                SegmentedArrow segArrow = hit.collider.GetComponentInParent<SegmentedArrow>();
-                if (segArrow != null)
-                {
-                    OnSegmentedArrowClicked(segArrow);
-                    return;
-                }
-                
-                // 最后检查是否是普通箭头
-                ArrowBlock arrow = hit.collider.GetComponent<ArrowBlock>();
-                if (arrow != null)
-                {
-                    OnArrowClicked(arrow);
-                }
-            }
+            return;
         }
-        
-        // 触摸屏支持
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-        {
-            Ray ray = mainCamera.ScreenPointToRay(Input.GetTouch(0).position);
-            RaycastHit hit;
-            
-            if (Physics.Raycast(ray, out hit, 100f, arrowLayer))
-            {
-                // 先检查是否是 MegaBend 箭头
-                // MegaBendArrow megaBendArrow = hit.collider.GetComponent<MegaBendArrow>();
-                // if (megaBendArrow != null)
-                // {
-                //     OnMegaBendArrowClicked(megaBendArrow);
-                //     return;
-                // }
-                
-                // 再检查是否是分段箭头
-                SegmentedArrow segArrow = hit.collider.GetComponentInParent<SegmentedArrow>();
-                if (segArrow != null)
-                {
-                    OnSegmentedArrowClicked(segArrow);
-                    return;
-                }
-                
-                // 最后检查是否是普通箭头
-                ArrowBlock arrow = hit.collider.GetComponent<ArrowBlock>();
-                if (arrow != null)
-                {
-                    OnArrowClicked(arrow);
-                }
-            }
-        }
-    }
-    
-    /// <summary>
-    /// 箭头被点击时的处理
-    /// </summary>
-    void OnArrowClicked(ArrowBlock arrow)
-    {
-        if (arrow.isMoving)
+        Debug.Log($"点击了箭头: {arrow}");
+        if (arrow.IsMoving)
         {
             Debug.Log("箭头正在移动中，无法点击");
             return;
         }
+        else
+        {
+            // todo 检查前方是否有别的方块阻挡，
+            // 现在直接移动出去
+            gridSystem.UnregisterArrowBlock(arrow);
+            arrow.MoveOut();
+        }
         
-        Debug.Log($"点击了箭头: {arrow.name}");
-        selectedArrow = arrow;
-        arrow.OnArrowClicked();
         totalMoves++;
-        
+
         // 检查是否有其他箭头在移动
         CheckGameState();
     }
     
-    /// <summary>
-    /// 查找场景中所有箭头块
-    /// </summary>
-    void FindAllArrowBlocks()
-    {
-        arrowBlocks.Clear();
-        ArrowBlock[] foundArrows = FindObjectsOfType<ArrowBlock>();
-        arrowBlocks.AddRange(foundArrows);
-        Debug.Log($"找到 {arrowBlocks.Count} 个箭头块");
-    }
     
-    /// <summary>
-    /// 查找场景中所有分段箭头
-    /// </summary>
-    void FindAllSegmentedArrows()
+    private IEnumerator CreateSnakeCor()
     {
-        segmentedArrows.Clear();
-        SegmentedArrow[] foundSegmented = FindObjectsOfType<SegmentedArrow>();
-        segmentedArrows.AddRange(foundSegmented);
-        Debug.Log($"找到 {segmentedArrows.Count} 个分段箭头");
-    }
-    
-    /// <summary>
-    /// 查找场景中所有 MegaBend 箭头
-    /// </summary>
-    void FindAllMegaBendArrows()
-    {
-        // megaBendArrows.Clear();
-        // MegaBendArrow[] foundMegaBend = FindObjectsOfType<MegaBendArrow>();
-        // megaBendArrows.AddRange(foundMegaBend);
-        // Debug.Log($"找到 {megaBendArrows.Count} 个 MegaBend 箭头");
-    }
-    
-    void OnSegmentedArrowClicked(SegmentedArrow arrow)
-    {
-        if (arrow.isMoving)
+        var data = LevelDataReader.LoadLevelData(0);
+        foreach (var blockData in data.arrowBlocks)
         {
-            Debug.Log("箭头正在移动中，无法点击");
-            return;
+            yield return new WaitForEndOfFrame();
+            var arrow = CreateArrowBlock(blockData);
+            gridSystem.RegisterArrowBlock(arrow);
+            // yield break;
         }
-        
-        Debug.Log($"点击了分段箭头: {arrow.name}");
-        selectedSegmentedArrow = arrow;
-        arrow.StartMoving();
-        totalMoves++;
-        
-        CheckGameState();
+    }
+
+    /// <summary>
+    /// 创建箭头块
+    /// </summary>
+    IArrow CreateArrowBlock(ArrowData data)
+    {
+        var ropeSnake = Instantiate(arrowBlockPrefab).GetComponent<SplineRopeSnake>();
+        var path = new List<Vector3>();
+        var endPos = data.customPath.Last() + new Vector3(data.direction.x, 0, data.direction.y) * 10;
+        path.AddRange(data.customPath);
+        path.Add(endPos);
+        // 延长起点坐标
+        ropeSnake.SetWaypoints(path);
+        ropeSnake.SetData(data);
+        ropeSnake.InitArrow();
+        return ropeSnake;
+    }
+    
+    /// <summary>
+    /// 清空当前关卡
+    /// </summary>
+    void ClearCurrentLevel()
+    {
+        SplineRopeSnake[] arrows = FindObjectsOfType<SplineRopeSnake>();
+        foreach (var arrow in arrows)
+        {
+            Destroy(arrow.gameObject);
+        }
     }
     
     /// <summary>
@@ -219,37 +152,11 @@ public class GameManager : MonoBehaviour
         // 检查普通箭头
         foreach (var arrow in arrowBlocks)
         {
-            if (arrow.isMoving)
+            if (arrow.IsMoving)
             {
                 allCompleted = false;
                 break;
             }
-        }
-        
-        // 检查分段箭头
-        if (allCompleted)
-        {
-            foreach (var arrow in segmentedArrows)
-            {
-                if (arrow.isMoving)
-                {
-                    allCompleted = false;
-                    break;
-                }
-            }
-        }
-        
-        // 检查 MegaBend 箭头
-        if (allCompleted)
-        {
-            // foreach (var arrow in megaBendArrows)
-            // {
-            //     if (arrow.isMoving)
-            //     {
-            //         allCompleted = false;
-            //         break;
-            //     }
-            // }
         }
         
         if (allCompleted)
@@ -278,23 +185,9 @@ public class GameManager : MonoBehaviour
         // 重置普通箭头
         foreach (var arrow in arrowBlocks)
         {
-            arrow.StopAllCoroutines();
-            arrow.isMoving = false;
+            arrow.Reset();
         }
         
-        // 重置分段箭头
-        foreach (var arrow in segmentedArrows)
-        {
-            arrow.StopAllCoroutines();
-            arrow.isMoving = false;
-        }
-        
-        // 重置 MegaBend 箭头
-        // foreach (var arrow in megaBendArrows)
-        // {
-        //     arrow.StopAllCoroutines();
-        //     arrow.isMoving = false;
-        // }
     }
     
     /// <summary>
