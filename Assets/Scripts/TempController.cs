@@ -23,7 +23,7 @@ namespace DefaultNamespace
             // }
             
             // 4. 初始化绳子控制器
-            var controller = GetComponent<SplineRopeController>();
+            var controller = GetComponent<SplineRopeSnake>();
             
             controller.bones = skinnedMeshRenderer.bones.ToList(); // 传递骨骼引用
             controller.baseLength = length;                // 设置基础长度

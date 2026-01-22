@@ -54,7 +54,7 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     GameObject CreateArrowBlock(ArrowBlockData data)
     {
-        var splineRopeController = Instantiate(arrowBlockPrefab).GetComponent<SplineRopeController>();
+        var splineRopeController = Instantiate(arrowBlockPrefab).GetComponent<SplineRopeSnake>();
         var path = new List<Vector3>();
         var endPos = data.customPath.Last() + new Vector3(data.direction.x, 0, data.direction.y) * 10;
         path.AddRange(data.customPath);
@@ -73,7 +73,7 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     void ClearCurrentLevel()
     {
-        SplineRopeController[] arrows = FindObjectsOfType<SplineRopeController>();
+        SplineRopeSnake[] arrows = FindObjectsOfType<SplineRopeSnake>();
         foreach (var arrow in arrows)
         {
             Destroy(arrow.gameObject);

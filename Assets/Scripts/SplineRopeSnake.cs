@@ -7,7 +7,7 @@ using UnityEngine.Splines;
 /// 基于 Unity Spline 的可伸缩弯曲绳子控制器。
 /// 特点：支持固定半径 90 度圆角、骨骼自适应分布（弯道密集、直线稀疏）、防抖动处理。
 /// </summary>
-public class SplineRopeController : MonoBehaviour
+public class SplineRopeSnake : MonoBehaviour
 {
     [Header("Spline 核心配置")]
     [Tooltip("用于渲染和路径计算的 Spline 容器")]

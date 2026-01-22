@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.Splines;
 
 /// <summary>
-/// 负责生成绳子模型并初始化 SplineRopeController
+/// 负责生成绳子模型并初始化 SplineRopeSnake
 /// 基于Unity的SkinnedMeshRenderer系统创建可变形的绳子网格
 /// </summary>
 [RequireComponent(typeof(SkinnedMeshRenderer))]
-[RequireComponent(typeof(SplineRopeController))]
+[RequireComponent(typeof(SplineRopeSnake))]
 public class SplineRopeMaker : MonoBehaviour
 {
     [Header("Rope Mesh Settings")]
@@ -20,7 +20,7 @@ public class SplineRopeMaker : MonoBehaviour
     public Material material;           // 绳子材质
 
     private List<Transform> bones = new List<Transform>();  // 骨骼变换列表
-    private SplineRopeController controller;                 // 绳子控制器引用
+    private SplineRopeSnake m_Snake;                 // 绳子控制器引用
 
     void Awake()
     {
@@ -134,7 +134,7 @@ public class SplineRopeMaker : MonoBehaviour
         mesh.RecalculateNormals();                    // 重新计算法线（用于光照）
         mesh.RecalculateBounds();                     // 重新计算边界框
 
-        // AssetDatabase.CreateAsset(mesh, "Assets/mesh.asset");
+        AssetDatabase.CreateAsset(mesh, "Assets/mesh.asset");
         
         // 3. 配置蒙皮网格渲染器
         SkinnedMeshRenderer smr = GetComponent<SkinnedMeshRenderer>();
@@ -144,8 +144,8 @@ public class SplineRopeMaker : MonoBehaviour
         if (material != null) smr.material = material; // 设置材质
 
         // 4. 初始化绳子控制器
-        controller = GetComponent<SplineRopeController>();
-        controller.bones = bones;                     // 传递骨骼引用
-        controller.baseLength = length;                // 设置基础长度
+        m_Snake = GetComponent<SplineRopeSnake>();
+        m_Snake.bones = bones;                     // 传递骨骼引用
+        m_Snake.baseLength = length;                // 设置基础长度
     }
 }
