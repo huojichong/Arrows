@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     [Header("关卡配置")]
     public GameObject arrowBlockPrefab;
 
+    public GameObject arrowBlockGPTPrefab;
     
     [SerializeField]
     private GestureManager gestureManager;
@@ -35,6 +36,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
 
+        return;
         Time.timeScale = 0.1f;
         
         if (mainCamera == null)
@@ -51,8 +53,6 @@ public class GameManager : MonoBehaviour
 
     private void InitArrowData()
     {
-        ClearCurrentLevel();
-        
         StartCoroutine(CreateSnakeCor());
     }
 
@@ -134,18 +134,6 @@ public class GameManager : MonoBehaviour
         ropeSnake.SetData(data);
         ropeSnake.InitArrow();
         return ropeSnake;
-    }
-    
-    /// <summary>
-    /// 清空当前关卡
-    /// </summary>
-    void ClearCurrentLevel()
-    {
-        SplineRopeSnake[] arrows = FindObjectsOfType<SplineRopeSnake>();
-        foreach (var arrow in arrows)
-        {
-            Destroy(arrow.gameObject);
-        }
     }
     
     /// <summary>

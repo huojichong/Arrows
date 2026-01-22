@@ -145,7 +145,7 @@ public class SplineRopeMaker : MonoBehaviour
 
         // 4. 初始化绳子控制器
         m_Snake = GetComponent<SplineRopeSnake>();
-        m_Snake.bones = bones;                     // 传递骨骼引用
+        m_Snake.bones = bones.ToArray();                     // 传递骨骼引用
         m_Snake.baseLength = length;                // 设置基础长度
     }
 }

@@ -6,19 +6,19 @@ using UnityEngine;
 /// </summary>
 public class GridRopeFollower : MonoBehaviour
 {
-    public SplineRopeSnake ropeSnake;
-    public float gridSize = 1f;
+    public SplineRopeSnakeManager ropeSnakeMgr;
+    // public float gridSize = 1f;
     
     [Header("Demo Settings")]
-    public float stretchSpeed = 0.5f;
-    public bool autoMove = true;
+    // public float stretchSpeed = 0.5f;
+    // public bool autoMove = true;
 
     private List<Vector3> demoWaypoints = new List<Vector3>();
 
     void Start()
     {
-        if (ropeSnake == null)
-            ropeSnake = GetComponent<SplineRopeSnake>();
+        if (ropeSnakeMgr == null)
+            ropeSnakeMgr = GetComponent<SplineRopeSnakeManager>();
 
         // 创建一个演示路径：直走 -> 左转 -> 右转 -> 直走
         Vector3 p = transform.position;
@@ -29,10 +29,17 @@ public class GridRopeFollower : MonoBehaviour
         demoWaypoints.Add(p);
         p += Vector3.forward * 3;
         demoWaypoints.Add(p);
-        p += Vector3.right * 10;
+        p += Vector3.right * 3;
         demoWaypoints.Add(p);
 
-        ropeSnake.SetWaypoints(demoWaypoints);
+        p += Vector3.forward * 4;
+        demoWaypoints.Add(p);
+
+        p += Vector3.left * 5;
+        demoWaypoints.Add(p);
+
+
+        ropeSnakeMgr.SetupSnake(demoWaypoints);
         // ropeSnake.isMoving = autoMove;
     }
 
@@ -41,7 +48,7 @@ public class GridRopeFollower : MonoBehaviour
         // 按键演示方向控制 (可选)
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ropeSnake.isMoving = !ropeSnake.isMoving;
+            
         }
     }
 }

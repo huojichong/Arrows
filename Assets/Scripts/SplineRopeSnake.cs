@@ -19,7 +19,7 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     
     [Header("绳子与骨骼")]
     [Tooltip("绳子的骨骼列表，头部为 index 0")]
-    public List<Transform> bones;
+    public Transform[] bones;
     
     [Tooltip("绳子在路径上的固定长度")]
     public float baseLength = 2.0f;
@@ -41,6 +41,13 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     [Tooltip("当前移动的距离（头部相对于路径起点）")]
     public float currentDistance = 0f;
 
+    [Tooltip("单元弯曲")]
+    public UnitSnake unitSnake;
+    
+    // 新增：相对于头部的距离偏移（用于多段拼接）
+    [HideInInspector]
+    public float segmentOffset = 0f;
+
     [Header("自适应分布与稳定性")]
     [Range(0, 30f)]
     [Tooltip("曲率敏感度：值越大，拐弯处的骨骼越密集，直线处越稀疏")]
@@ -61,8 +68,12 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     private List<float> splineDistances = new List<float>();
     private List<float> splineWeights = new List<float>();
     private float totalPathWeight = 0;
-    private const int DENSITY_SAMPLES_PER_UNIT = 20; // 每单位长度的采样点密度（提高精度）
+    private const int DENSITY_SAMPLES_PER_UNIT = 10; // 每单位长度的采样点密度（提高精度）
 
+    private List<SplineRopeSnake> activeSegments = new List<SplineRopeSnake>();
+
+    private float fullLength { get; set; }
+    
     void Awake()
     {
         if (splineContainer == null)
@@ -198,8 +209,8 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
         splineDistances.Clear();
         splineWeights.Clear();
         totalPathWeight = 0;
-    
-        float fullLength = splineContainer.CalculateLength();
+
+        this.fullLength = splineContainer.CalculateLength();
         // 根据总长度决定采样精度（提高采样密度以更准确捕捉曲率）
         int sampleCount = Mathf.Max(30, Mathf.CeilToInt(fullLength * DENSITY_SAMPLES_PER_UNIT));
     
@@ -232,23 +243,33 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     /// </summary>
     public void UpdateBones()
     {
-        if (bones == null || bones.Count == 0 || splineWeights.Count == 0) return;
-
+        if (bones == null || bones.Length == 0 || splineWeights.Count == 0) return;
+ 
         float fullLength = splineContainer.CalculateLength();
-        float currentRopeLength = baseLength * stretchMultiplier;
+        float currentRopeLength = baseLength; // 假设长度固定
 
-        // 1. 获取绳子头部和尾部在权重坐标系中的累积权重位置
-        float headWeightPos = GetAccumulatedWeightAtPos(currentDistance);
-        float tailWeightPos = GetAccumulatedWeightAtPos(currentDistance - currentRopeLength);
+        // float currentRopeLength = baseLength * stretchMultiplier;
+
+        // 修改：头部位置现在考虑了段偏移
+        float effectiveHeadDist = currentDistance - segmentOffset;
+        float effectiveTailDist = effectiveHeadDist - currentRopeLength;
+
+        // 1. 获取绳子分段在权重坐标系中的累积权重位置
+        float headWeightPos = GetAccumulatedWeightAtPos(effectiveHeadDist);
+        float tailWeightPos = GetAccumulatedWeightAtPos(effectiveTailDist);
+        //
+        // // 1. 获取绳子头部和尾部在权重坐标系中的累积权重位置
+        // float headWeightPos = GetAccumulatedWeightAtPos(currentDistance);
+        // float tailWeightPos = GetAccumulatedWeightAtPos(currentDistance - currentRopeLength);
         
         // 绳子当前占据的总权重跨度
         float weightSpan = headWeightPos - tailWeightPos;
 
         // 2. 遍历骨骼，根据权重比例非线性地分配到 Spline 路径上
-        for (int i = 0; i < bones.Count; i++)
+        for (int i = 0; i < bones.Length; i++)
         {
             // 计算骨骼在权重维度上的目标位置
-            float t_bone = (bones.Count > 1) ? i / (float)(bones.Count - 1) : 0;
+            float t_bone = (bones.Length > 1) ? i / (float)(bones.Length - 1) : 0;
             float targetWeight = headWeightPos - (t_bone * weightSpan);
             
             // 将权重位置反推回实际的物理距离 (Distance)
@@ -392,13 +413,40 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
     {
         isMoving = true;
     }
-
+    
     public void InitArrow()
     {
         isMoving = false;
         // 禁用位置平滑，确保初始化时骨骼立即到位
         float originalSmoothing = positionSmoothing;
         positionSmoothing = 0;
+        
+        
+        // 1. 清理旧分段
+        // foreach (var seg in activeSegments) Destroy(seg.gameObject);
+        // activeSegments.Clear();
+        //
+        // // 2. 计算路径信息
+        // int cornerCount = CalculateCorners(waypoints);
+        // float totalPathLength = CalculatePathLength(waypoints);
+        //
+        // // 3. 动态决定需要多少分段
+        // // 你可以根据 totalPathLength 来决定生成多少个 segmentPrefab  // toto 具体逻辑待确定
+        // int segmentCount = Mathf.CeilToInt((totalPathLength + cornerCount) / segmentLength);
+        //
+        // // 4. 动态调整曲率敏感度
+        // // float dynamicCurvature = 10f + (cornerCount * curvatureBoostPerCorner);
+        //
+        // var totalBones = new List<Transform>();
+        // for (int i = 0; i < segmentCount; i++)
+        // {
+        //     GameObject go = Instantiate(this.unitSnake.gameObject, transform);
+        //     var snake = go.GetComponent<UnitSnake>();
+        //     snake.head.gameObject.SetActive(i == 0);
+        //     totalBones.AddRange(snake.skinnedMeshRenderer.bones);
+        // }
+
+        bones = unitSnake.skinnedMeshRenderer.bones;
         
         // 初始阶段更新骨骼，立即定位（位置和旋转）
         UpdateBones();
@@ -421,5 +469,9 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
         
         // 恢复平滑设置
         positionSmoothing = originalSmoothing;
+
+        isMoving = true;
+
+        Time.timeScale = 0.1f;
     }
 }
