@@ -8,7 +8,7 @@ using UnityEngine.Splines;
 /// 基于Unity的SkinnedMeshRenderer系统创建可变形的绳子网格
 /// </summary>
 [RequireComponent(typeof(SkinnedMeshRenderer))]
-[RequireComponent(typeof(SplineRopeSnake))]
+[RequireComponent(typeof(SplineRopeSnakeRefactored))]
 public class SplineRopeMaker : MonoBehaviour
 {
     [Header("Rope Mesh Settings")]
@@ -20,7 +20,7 @@ public class SplineRopeMaker : MonoBehaviour
     public Material material;           // 绳子材质
 
     private List<Transform> bones = new List<Transform>();  // 骨骼变换列表
-    private SplineRopeSnake m_Snake;                 // 绳子控制器引用
+    private SplineRopeSnakeRefactored m_Snake;                 // 绳子控制器引用
 
     void Awake()
     {
@@ -145,8 +145,8 @@ public class SplineRopeMaker : MonoBehaviour
         if (material != null) smr.material = material; // 设置材质
 
         // 4. 初始化绳子控制器
-        m_Snake = GetComponent<SplineRopeSnake>();
-        m_Snake.bones = bones.ToArray();                     // 传递骨骼引用
-        m_Snake.baseLength = length;                // 设置基础长度
+        m_Snake = GetComponent<SplineRopeSnakeRefactored>();
+        // m_Snake.bones = bones.ToArray();                     // 传递骨骼引用
+        // m_Snake.baseLength = length;                // 设置基础长度
     }
 }

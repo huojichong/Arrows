@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
@@ -32,11 +33,25 @@ public class GameManager : MonoBehaviour
     
     [SerializeField]
     private GridSystem gridSystem;
-    
-    void Start()
+
+    private void Awake()
     {
 
-        return;
+// 创建蛇 1：长度 6，6 个 Segment
+        
+// 创建蛇 2：长度 3，3 个 Segment
+        // List<Vector3> path2 = new List<Vector3> { 
+        //     new Vector3(10, 0, 0), 
+        //     new Vector3(15, 0, 0) 
+        // };
+        // var snake2 = manager.AddSnake("Snake_Short", 3.0f, path2, unitLength: 1.0f, bonesPerSegment: 5);
+
+    }
+
+    void Start()
+    {
+        
+
         Time.timeScale = 0.1f;
         
         if (mainCamera == null)
@@ -105,11 +120,17 @@ public class GameManager : MonoBehaviour
     
     private IEnumerator CreateSnakeCor()
     {
+        
+        MultiSnakeManager manager = gameObject.GetComponent<MultiSnakeManager>();
+
+
         var data = LevelDataReader.LoadLevelData(0);
         foreach (var blockData in data.arrowBlocks)
         {
             yield return new WaitForEndOfFrame();
-            var arrow = CreateArrowBlock(blockData);
+            
+            var arrow = CreateArrowBlock(blockData,manager);
+
             gridSystem.RegisterArrowBlock(arrow);
             // yield break;
         }
@@ -118,9 +139,9 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// 创建箭头块
     /// </summary>
-    IArrow CreateArrowBlock(ArrowData data)
+    IArrow CreateArrowBlock(ArrowData data,MultiSnakeManager manager)
     {
-        var ropeSnake = Instantiate(arrowBlockPrefab).GetComponent<SplineRopeSnake>();
+        // var ropeSnake = Instantiate(arrowBlockPrefab).GetComponent<SplineRopeSnakeRefactored>();
         var path = new List<Vector3>();
         var arrVect = new Vector3(data.direction.x, 0, data.direction.y);
         var endPos = data.customPath.Last() + arrVect * 10;
@@ -129,11 +150,14 @@ public class GameManager : MonoBehaviour
         path[^1] -= arrVect;
         
         path.Add(endPos);
+        
         // 延长起点坐标
-        ropeSnake.SetWaypoints(path);
-        ropeSnake.SetData(data);
-        ropeSnake.InitArrow();
-        return ropeSnake;
+        // ropeSnake.SetWaypoints(path);
+        // ropeSnake.SetData(data);
+        // ropeSnake.InitArrow();
+        var snake1 = manager.AddSnake("Snake_Long", data.pathLength, path, unitLength: 1.0f, bonesPerSegment: 5);
+
+        return snake1;
     }
     
     /// <summary>

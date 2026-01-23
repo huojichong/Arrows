@@ -228,6 +228,7 @@ GameObject:
   - component: {fileID: 1745754694}
   - component: {fileID: 1745754696}
   - component: {fileID: 1745754697}
+  - component: {fileID: 1745754698}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -269,7 +270,8 @@ Transform:
   m_LocalPosition: {x: -0.91848475, y: -0.60848635, z: 3.3592792}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1849583550}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1745754696
@@ -304,6 +306,24 @@ MonoBehaviour:
   gridDimensions: {x: 10, y: 10}
   showGrid: 1
   gridColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &1745754698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745754692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 935b018041dfa4b008539eb4e8b02b8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snakeConfigs: []
+  snakePrefab: {fileID: 3130841402161198113, guid: e6765eb59a7744073acc42f389d9744b, type: 3}
+  segmentPrefab: {fileID: 4401924788566768278, guid: 58f7bcba32e674fc691a5659f4f0a992, type: 3}
+  filletRadius: 0.5
+  moveSpeed: 2
+  curvatureSensitivity: 15
 --- !u!1 &1800560592
 GameObject:
   m_ObjectHideFlags: 0
@@ -396,7 +416,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 76.3, y: 0, z: 0}
---- !u!1 &2104393730
+--- !u!1 &1849583548
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -404,67 +424,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2104393732}
-  - component: {fileID: 2104393733}
-  - component: {fileID: 2104393734}
-  - component: {fileID: 2104393735}
+  - component: {fileID: 1849583550}
+  - component: {fileID: 1849583549}
   m_Layer: 0
-  m_Name: GridRopeFollower
+  m_Name: Spline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2104393732
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2104393730}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2104393733
+--- !u!114 &1849583549
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2104393730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed333c8a0bd5243018f6e5f15725c8f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ropeSnakeMgr: {fileID: 2104393734}
---- !u!114 &2104393734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2104393730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5431ea95a5849c6b6481cf17a07c2e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  segmentPrefab: {fileID: 3130841402161198113, guid: e6765eb59a7744073acc42f389d9744b, type: 3}
-  segmentLength: 1
-  curvatureBoostPerCorner: 2
---- !u!114 &2104393735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2104393730}
+  m_GameObject: {fileID: 1849583548}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
@@ -487,7 +462,7 @@ MonoBehaviour:
   - m_EditModeType: 1
     m_Knots: []
     m_MetaData: []
-    m_Closed: 0
+    m_Closed: 1
     m_IntData:
       m_Data: []
     m_FloatData:
@@ -498,6 +473,21 @@ MonoBehaviour:
       m_Data: []
   m_Knots:
     m_KnotsLink: []
+--- !u!4 &1849583550
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849583548}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1745754695}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &139743530369783359
 Transform:
   m_ObjectHideFlags: 0
@@ -2122,76 +2112,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28cf6566e7faf437487f3f78007524dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  splineContainer: {fileID: 4694848721016336521}
-  filletRadius: 0.1
-  bones:
-  - {fileID: 4744599834630895362}
-  - {fileID: 6683607730019245915}
-  - {fileID: 3771665144291304278}
-  - {fileID: 8878848259056256102}
-  - {fileID: 2200584926447962912}
-  - {fileID: 7487268176600114653}
-  - {fileID: 1479428002263378777}
-  - {fileID: 5770417449121926167}
-  - {fileID: 3392916811621222763}
-  - {fileID: 3249680286431684078}
-  - {fileID: 1471024286607435338}
-  - {fileID: 9100631036168648247}
-  - {fileID: 3429940424862330841}
-  - {fileID: 2864464053432786896}
-  - {fileID: 6909025357788702961}
-  - {fileID: 3523417502786117303}
-  - {fileID: 4686094203095666718}
-  - {fileID: 3088892124581738839}
-  - {fileID: 1762884038562125918}
-  - {fileID: 139743530369783359}
-  - {fileID: 3090512708332601557}
-  - {fileID: 4272206684630846907}
-  - {fileID: 7375011699559687426}
-  - {fileID: 4639834570543446073}
-  - {fileID: 3395852766002478211}
-  - {fileID: 7063534693190882929}
-  - {fileID: 7311928516111690761}
-  - {fileID: 3680457686209612604}
-  - {fileID: 4337264951369432152}
-  - {fileID: 5353473406333344552}
-  - {fileID: 8708572807654491467}
-  - {fileID: 7427312018474278766}
-  - {fileID: 1790093153647064593}
-  - {fileID: 4774449073580121138}
-  - {fileID: 2612208542734654549}
-  - {fileID: 867131961404320571}
-  - {fileID: 2983589934585822127}
-  - {fileID: 6474485690922887054}
-  - {fileID: 1066639975984981151}
-  - {fileID: 234754089516272709}
-  - {fileID: 1097602597156349710}
-  - {fileID: 3021457358321028838}
-  - {fileID: 1671456764441013787}
-  - {fileID: 6923954334091857936}
-  - {fileID: 2312737210966888393}
-  - {fileID: 1853643542134483253}
-  - {fileID: 3702713900327557123}
-  - {fileID: 3822830893958717732}
-  - {fileID: 5348441052680753369}
-  - {fileID: 9030791475507183971}
-  baseLength: 1
-  initialDistanceOffset: 0.1
-  stretchMultiplier: 1
-  moveSpeed: 2
-  isMoving: 0
-  currentDistance: 0
-  unitSnake: {fileID: 0}
-  segmentOffset: 0
-  curvatureSensitivity: 8
-  positionSmoothing: 0.1
-  rotationSmoothing: 0.3
-  waypoints:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 3}
-  - {x: -3, y: 0, z: 3}
-  - {x: -3, y: 0, z: 6}
-  - {x: 7, y: 0, z: 6}
 --- !u!4 &7311928516111690761
 Transform:
   m_ObjectHideFlags: 0
@@ -2424,6 +2344,7 @@ GameObject:
   - component: {fileID: 7279644438487306255}
   - component: {fileID: 8798116272775714361}
   - component: {fileID: 8798116272775714360}
+  - component: {fileID: 8798116272775714362}
   m_Layer: 0
   m_Name: SplineRopeSnake
   m_TagString: Untagged
@@ -2502,6 +2423,22 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   m_DirtyAABB: 0
+--- !u!114 &8798116272775714362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8798116272775714359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e8919811ebe8465fa8794d0738fd5a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathManager: {fileID: 0}
+  mainSegment: {fileID: 0}
+  unitSnake: {fileID: 0}
+  initialDistanceOffset: 0.1
 --- !u!1 &8812941058086773309
 GameObject:
   m_ObjectHideFlags: 0
@@ -2667,4 +2604,3 @@ SceneRoots:
   - {fileID: 1730594112}
   - {fileID: 4051043898483354090}
   - {fileID: 1745754695}
-  - {fileID: 2104393732}

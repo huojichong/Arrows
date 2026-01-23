@@ -7,6 +7,6 @@ public class UnitSnake : MonoBehaviour
     [SerializeField]
     public SkinnedMeshRenderer skinnedMeshRenderer;
 
-
+    
     public Transform head;
 }

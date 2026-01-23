@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class GridRopeFollower : MonoBehaviour
 {
-    public SplineRopeSnakeManager ropeSnakeMgr;
+    // public SplineRopeSnakeManager ropeSnakeMgr;
     // public float gridSize = 1f;
     
     [Header("Demo Settings")]
@@ -17,8 +17,8 @@ public class GridRopeFollower : MonoBehaviour
 
     void Start()
     {
-        if (ropeSnakeMgr == null)
-            ropeSnakeMgr = GetComponent<SplineRopeSnakeManager>();
+        // if (ropeSnakeMgr == null)
+        //     ropeSnakeMgr = GetComponent<SplineRopeSnakeManager>();
 
         // 创建一个演示路径：直走 -> 左转 -> 右转 -> 直走
         Vector3 p = transform.position;
@@ -39,7 +39,7 @@ public class GridRopeFollower : MonoBehaviour
         demoWaypoints.Add(p);
 
 
-        ropeSnakeMgr.SetupSnake(demoWaypoints);
+        // ropeSnakeMgr.SetupSnake(demoWaypoints);
         // ropeSnake.isMoving = autoMove;
     }
 

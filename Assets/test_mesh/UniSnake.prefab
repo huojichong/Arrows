@@ -355,7 +355,7 @@ GameObject:
   - component: {fileID: 6768143529629443697}
   - component: {fileID: 5838374699817890899}
   m_Layer: 0
-  m_Name: rope
+  m_Name: UniSnake
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
