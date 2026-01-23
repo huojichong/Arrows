@@ -133,8 +133,9 @@ public class SplineRopeMaker : MonoBehaviour
         mesh.bindposes = bindPoses;                   // 设置绑定姿态
         mesh.RecalculateNormals();                    // 重新计算法线（用于光照）
         mesh.RecalculateBounds();                     // 重新计算边界框
-
-        AssetDatabase.CreateAsset(mesh, "Assets/mesh.asset");
+        
+        // AssetDatabase.CreateAsset(mesh, "Assets/mesh.asset");
+        // AssetDatabase.CreateAsset(this.gameObject, "Assets/rope.prefab");
         
         // 3. 配置蒙皮网格渲染器
         SkinnedMeshRenderer smr = GetComponent<SkinnedMeshRenderer>();
