@@ -37,14 +37,16 @@ public class SplineRopeSnakeManager : MonoBehaviour
         {
             GameObject go = Instantiate(segmentPrefab, transform);
             SplineRopeSnake snake = go.GetComponent<SplineRopeSnake>();
-
-            snake.splineContainer = splineContainer;
+            SnakePath path = snake.GetComponent<SnakePath>();
+            
             snake.baseLength = segmentLength;
             snake.segmentOffset = i * segmentLength; // 每个分段排在后一个后面
-            snake.curvatureSensitivity = dynamicCurvature;
-            snake.waypoints = waypoints;
-
-            snake.UpdateSplineFromWaypoints();
+            path.curvatureSensitivity = dynamicCurvature;
+            path.splineContainer =  splineContainer;
+            snake.currentDistance = 10;
+            snake.snakePath = path;
+            snake.snakePath.waypoints = waypoints;
+            snake.snakePath.UpdateSplineFromWaypoints();
             snake.InitArrow();
 
             activeSegments.Add(snake);

@@ -507,6 +507,7 @@ GameObject:
   - component: {fileID: 7589684117518355452}
   - component: {fileID: 1174524167885034143}
   - component: {fileID: 3777875242109186585}
+  - component: {fileID: 8995866593224870205}
   m_Layer: 0
   m_Name: SplineRopeMaker
   m_TagString: Untagged
@@ -748,7 +749,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   splineContainer: {fileID: 1174524167885034143}
-  filletRadius: 0.1
   bones: []
   baseLength: 1
   initialDistanceOffset: 0.1
@@ -758,15 +758,27 @@ MonoBehaviour:
   currentDistance: 0
   unitSnake: {fileID: 1075263683042992907}
   segmentOffset: 0
-  curvatureSensitivity: 4.81
   positionSmoothing: 0.1
   rotationSmoothing: 0.3
-  waypoints:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 3}
-  - {x: -3, y: 0, z: 3}
-  - {x: -3, y: 0, z: 6}
-  - {x: 7, y: 0, z: 6}
+  snakePath: {fileID: 0}
+--- !u!114 &8995866593224870205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3130841402161198113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07ed1223af444f93a2b3f93e16a87dac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  splineContainer: {fileID: 0}
+  waypoints: []
+  filletRadius: 0.5
+  curvatureSensitivity: 15
+  splineDistances: []
+  splineWeights: []
 --- !u!1 &3175910698541030820
 GameObject:
   m_ObjectHideFlags: 0
