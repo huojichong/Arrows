@@ -44,22 +44,6 @@ public class SplineRopeSegment : MonoBehaviour
 
     private bool _isInitialized = false;
 
-    void Start()
-    {
-        if (pathManager != null)
-        {
-            pathManager.RegisterSegment(this);
-        }
-    }
-
-    void OnDestroy()
-    {
-        if (pathManager != null)
-        {
-            pathManager.UnregisterSegment(this);
-        }
-    }
-
     /// <summary>
     /// 更新骨骼位置和旋转（由 Manager 调用）
     /// </summary>
@@ -71,6 +55,7 @@ public class SplineRopeSegment : MonoBehaviour
         float effectiveHeadDist = globalDistance - segmentOffset;
         float effectiveTailDist = effectiveHeadDist - segmentLength;
 
+        Debug.Log(this.transform.name +" UpdateBones: "  + "globalDistance:" + globalDistance + " segmentOffset:" + segmentOffset + " segmentLength:" + segmentLength +" effectiveHeadDist:" + effectiveHeadDist + " effectiveTailDist:" + effectiveTailDist);
         // 根据分配模式选择不同的骨骼位置计算方法
         bool useSmoothing = pathManager != null && pathManager.isMoving;
         if (distributionMode == BoneDistributionMode.Uniform)

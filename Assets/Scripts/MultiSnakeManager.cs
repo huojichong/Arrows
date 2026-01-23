@@ -35,11 +35,12 @@ public class MultiSnakeManager : MonoBehaviour
     public List<SnakeConfig> snakeConfigs = new List<SnakeConfig>();
     
     [Header("预制件引用")]
-    [Tooltip("蛇预制件（包含 UnitSnake 组件）")]
+    [Tooltip("蛇预制件 路径配置")]
     public GameObject snakePrefab;
     
-    // [Tooltip("Segment 预制件模板")]
-    // public GameObject segmentPrefab;
+    
+    [Tooltip("Segment 预制件模板")]
+    public GameObject unitSnakePrefab;
     
     [Header("全局配置")]
     [Tooltip("拐弯半径")]
@@ -48,38 +49,18 @@ public class MultiSnakeManager : MonoBehaviour
     [Tooltip("移动速度")]
     public float moveSpeed = 2.0f;
     
-    [Tooltip("曲率敏感度")]
+    
+    [Header("自适应分布")]
+    [Range(0, 30f)]
+    [Tooltip("曲率敏感度：值越大，拐弯处的骨骼越密集，直线处越稀疏")]
     public float curvatureSensitivity = 15.0f;
     
     private List<MultiSegmentSnake> _activeSnakes = new List<MultiSegmentSnake>();
-
-    void Start()
-    {
-        // 自动创建所有蛇
-        CreateAllSnakes();
-    }
-
-    /// <summary>
-    /// 创建所有配置的蛇
-    /// </summary>
-    [ContextMenu("Create All Snakes")]
-    public void CreateAllSnakes()
-    {
-        // 清除现有蛇
-        // ClearAllSnakes();
-        
-        for (int i = 0; i < snakeConfigs.Count; i++)
-        {
-            CreateSnake(snakeConfigs[i], i);
-        }
-        
-        Debug.Log($"[MultiSnakeManager] 成功创建 {_activeSnakes.Count} 条蛇");
-    }
-
+    
     /// <summary>
     /// 创建单条蛇
     /// </summary>
-    private void CreateSnake(SnakeConfig config, int index)
+    private void CreateSnake(SnakeConfig config, int index,IArrowData data)
     {
         // 1. 创建蛇对象
         GameObject snakeObj;
@@ -94,45 +75,39 @@ public class MultiSnakeManager : MonoBehaviour
         }
         
         // 2. 添加路径管理器
-        SplineRopePath pathManager = snakeObj.GetComponent<SplineRopePath>();
-        if (pathManager == null)
-            pathManager = snakeObj.AddComponent<SplineRopePath>();
+        SplineRopePath ropePath = snakeObj.GetComponent<SplineRopePath>();
+        if (ropePath == null)
+            ropePath = snakeObj.AddComponent<SplineRopePath>();
         
         // 添加 SplineContainer
         SplineContainer splineContainer = snakeObj.GetComponent<SplineContainer>();
         if (splineContainer == null)
             splineContainer = snakeObj.AddComponent<SplineContainer>();
         
-        pathManager.splineContainer = splineContainer;
-        pathManager.filletRadius = filletRadius;
-        pathManager.moveSpeed = moveSpeed;
-        pathManager.curvatureSensitivity = curvatureSensitivity;
+        ropePath.splineContainer = splineContainer;
+        ropePath.filletRadius = filletRadius;
+        ropePath.moveSpeed = moveSpeed;
+        ropePath.curvatureSensitivity = curvatureSensitivity;
         
         // 3. 添加多段蛇控制器
         MultiSegmentSnake multiSnake = snakeObj.GetComponent<MultiSegmentSnake>();
         if (multiSnake == null)
             multiSnake = snakeObj.AddComponent<MultiSegmentSnake>();
         
-        multiSnake.pathManager = pathManager;
+        multiSnake.pathManager = ropePath;
         
         multiSnake.segmentUnitLength = config.segmentUnitLength;
         multiSnake.bonesPerSegment = config.bonesPerSegment;
         multiSnake.distributionMode = config.distributionMode;
         
         // 4. 获取或创建 UnitSnake
-        UnitSnake unitSnake = snakeObj.GetComponentInChildren<UnitSnake>();
-        if (unitSnake == null && snakePrefab == null)
-        {
-            // 如果没有预制件，需要手动创建骨骼
-            Debug.LogWarning($"[MultiSnakeManager] Snake {index} 没有 UnitSnake 组件，需要手动配置骨骼！");
-        }
-        multiSnake.unitSnake = unitSnake;
+        multiSnake.unitSnake = unitSnakePrefab.GetComponent<UnitSnake>();
         
         // 5. 设置路径点
         if (config.waypoints.Count >= 2)
         {
-            pathManager.waypoints = new List<Vector3>(config.waypoints);
-            pathManager.UpdateSplineFromWaypoints();
+            ropePath.waypoints = new List<Vector3>(config.waypoints);
+            ropePath.UpdateSplineFromWaypoints();
         }
         else
         {
@@ -143,7 +118,9 @@ public class MultiSnakeManager : MonoBehaviour
         multiSnake.CreateSegments(config.totalLength);
         
         // 7. 初始化
-        pathManager.currentDistance = config.totalLength + multiSnake.initialDistanceOffset;
+        ropePath.currentDistance = config.totalLength + multiSnake.initialDistanceOffset;
+        
+        multiSnake.SetData(data);
         multiSnake.InitArrow();
         _activeSnakes.Add(multiSnake);
         
@@ -194,18 +171,19 @@ public class MultiSnakeManager : MonoBehaviour
     /// <summary>
     /// 动态添加一条新蛇
     /// </summary>
-    public MultiSegmentSnake AddSnake(string name, float length, List<Vector3> waypoints, float unitLength = 1.0f, int bonesPerSegment = 5)
+    public MultiSegmentSnake AddSnake(string name, float length, List<Vector3> wayPoints,IArrowData arrowData, float unitLength = 1.0f, int bonesPerSegment = 5)
     {
         SnakeConfig config = new SnakeConfig
         {
             snakeName = name,
             totalLength = length,
-            waypoints = waypoints,
+            waypoints = wayPoints,
             segmentUnitLength = unitLength,
-            bonesPerSegment = bonesPerSegment
+            bonesPerSegment = bonesPerSegment,
+            
         };
         
-        CreateSnake(config, _activeSnakes.Count);
+        CreateSnake(config, _activeSnakes.Count,arrowData);
         return _activeSnakes[_activeSnakes.Count - 1];
     }
 

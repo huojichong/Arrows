@@ -16,20 +16,20 @@ public class MultiSegmentSnake : MonoBehaviour, IArrow
     // public GameObject segmentPrefab;
     
     [Tooltip("UnitSnake 引用（用于获取骨骼）")]
-    public UnitSnake unitSnake;
+    public UnitSnake unitSnake { get; set; }
     
-    [Header("配置")]
+    // [Header("配置")]
     [Tooltip("每个 Segment 的长度（单位）")]
-    public float segmentUnitLength = 1.0f;
+    public float segmentUnitLength { get; set; } = 1.0f;
     
     [Tooltip("初始化距离偏移")]
     public float initialDistanceOffset = 0.1f;
     
     [Tooltip("每个 Segment 的骨骼数量")]
-    public int bonesPerSegment = 5;
+    public int bonesPerSegment { get; set; } = 5;
     
     [Tooltip("骨骼分配模式")]
-    public SplineRopeSegment.BoneDistributionMode distributionMode = SplineRopeSegment.BoneDistributionMode.Uniform;
+    public SplineRopeSegment.BoneDistributionMode distributionMode { get; set; } = SplineRopeSegment.BoneDistributionMode.Uniform;
     
     // IArrow 接口实现
     public IArrowData arrowData { get; set; }
@@ -37,7 +37,7 @@ public class MultiSegmentSnake : MonoBehaviour, IArrow
     bool IArrow.IsMoving => pathManager != null && pathManager.isMoving;
     
     private List<SplineRopeSegment> _segments = new List<SplineRopeSegment>();
-    private List<Transform[]> _segmentBones = new List<Transform[]>();
+    // private List<Transform[]> _segmentBones = new List<Transform[]>();
     private float _totalLength = 0f;
 
     void Awake()
@@ -80,10 +80,10 @@ public class MultiSegmentSnake : MonoBehaviour, IArrow
             allBones = unitSnake.skinnedMeshRenderer.bones;
         }
         
-        int totalBonesNeeded = segmentCount * bonesPerSegment;
-        if (allBones != null && allBones.Length < totalBonesNeeded)
+        // int totalBonesNeeded = segmentCount * bonesPerSegment;
+        if (allBones != null && allBones.Length < bonesPerSegment)
         {
-            Debug.LogWarning($"[MultiSegmentSnake] 骨骼数量不足！需要 {totalBonesNeeded}，但只有 {allBones.Length}");
+            Debug.LogWarning($"[MultiSegmentSnake] 骨骼数量不足！需要 {bonesPerSegment}，但只有 {allBones.Length}");
         }
         
         // 创建每个 Segment
@@ -110,15 +110,16 @@ public class MultiSegmentSnake : MonoBehaviour, IArrow
             // 配置 Segment 参数
             segment.segmentLength = segmentUnitLength;
             segment.segmentOffset = i * segmentUnitLength; // 每个 Segment 依次偏移
+            Debug.Log("创建 Segment Offset : " +  segment.segmentOffset);
             segment.distributionMode = distributionMode;
             segment.pathManager = pathManager;
             
             // 分配骨骼
-            if (allBones != null)
+            // if (allBones != null)
             {
-                Transform[] segmentBones = AssignBonesToSegment(allBones, i, bonesPerSegment);
-                segment.bones = segmentBones;
-                _segmentBones.Add(segmentBones);
+                // Transform[] segmentBones = AssignBonesToSegment(allBones, i, bonesPerSegment);
+                segment.bones = allBones;
+                // _segmentBones.Add(segmentBones);
             }
             
             // 注册到路径管理器
@@ -170,7 +171,7 @@ public class MultiSegmentSnake : MonoBehaviour, IArrow
         }
         
         _segments.Clear();
-        _segmentBones.Clear();
+        // _segmentBones.Clear();
     }
 
     public void SetWaypoints(List<Vector3> points, bool resetDistance = true)

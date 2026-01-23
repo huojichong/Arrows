@@ -319,11 +319,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snakeConfigs: []
-  snakePrefab: {fileID: 3130841402161198113, guid: e6765eb59a7744073acc42f389d9744b, type: 3}
-  segmentPrefab: {fileID: 4401924788566768278, guid: 58f7bcba32e674fc691a5659f4f0a992, type: 3}
+  snakePrefab: {fileID: 4401924788566768278, guid: 58f7bcba32e674fc691a5659f4f0a992, type: 3}
   filletRadius: 0.5
   moveSpeed: 2
-  curvatureSensitivity: 15
+  curvatureSensitivity: 8.85
 --- !u!1 &1800560592
 GameObject:
   m_ObjectHideFlags: 0
@@ -2112,6 +2111,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28cf6566e7faf437487f3f78007524dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  splineContainer: {fileID: 0}
+  filletRadius: 0.5
+  bones: []
+  baseLength: 2
+  initialDistanceOffset: 0.1
+  stretchMultiplier: 1
+  moveSpeed: 2
+  isMoving: 0
+  currentDistance: 0
+  unitSnake: {fileID: 0}
+  segmentOffset: 0
+  curvatureSensitivity: 15
+  positionSmoothing: 0.1
+  rotationSmoothing: 0.3
+  waypoints: []
 --- !u!4 &7311928516111690761
 Transform:
   m_ObjectHideFlags: 0

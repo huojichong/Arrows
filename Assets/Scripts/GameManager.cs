@@ -33,25 +33,10 @@ public class GameManager : MonoBehaviour
     
     [SerializeField]
     private GridSystem gridSystem;
-
-    private void Awake()
-    {
-
-// 创建蛇 1：长度 6，6 个 Segment
-        
-// 创建蛇 2：长度 3，3 个 Segment
-        // List<Vector3> path2 = new List<Vector3> { 
-        //     new Vector3(10, 0, 0), 
-        //     new Vector3(15, 0, 0) 
-        // };
-        // var snake2 = manager.AddSnake("Snake_Short", 3.0f, path2, unitLength: 1.0f, bonesPerSegment: 5);
-
-    }
+    
 
     void Start()
     {
-        
-
         Time.timeScale = 0.1f;
         
         if (mainCamera == null)
@@ -132,7 +117,9 @@ public class GameManager : MonoBehaviour
             var arrow = CreateArrowBlock(blockData,manager);
 
             gridSystem.RegisterArrowBlock(arrow);
-            // yield break;
+            
+            
+            yield break;
         }
     }
 
@@ -148,15 +135,12 @@ public class GameManager : MonoBehaviour
         path.AddRange(data.customPath);
         // 还有头的显示, 最后一个是头
         path[^1] -= arrVect;
-        
+        // 延长起点坐标
+
         path.Add(endPos);
         
-        // 延长起点坐标
-        // ropeSnake.SetWaypoints(path);
-        // ropeSnake.SetData(data);
-        // ropeSnake.InitArrow();
-        var snake1 = manager.AddSnake("Snake_Long", data.pathLength, path, unitLength: 1.0f, bonesPerSegment: 5);
-
+        var snake1 = manager.AddSnake("Snake_Long", data.pathLength, path,data, unitLength: 1.0f, bonesPerSegment: 15);
+        
         return snake1;
     }
     
