@@ -49,7 +49,10 @@ public class SplineRopeSegment : MonoBehaviour
     /// </summary>
     public void UpdateBones(float globalDistance, PathData pathData, SplineContainer splineContainer)
     {
-        if (bones == null || bones.Length == 0) return;
+        if (bones == null || bones.Length == 0)
+        {
+            return;
+        }
 
         // 计算该段的有效头部和尾部距离
         float effectiveHeadDist = globalDistance - segmentOffset;
