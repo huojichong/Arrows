@@ -18,6 +18,7 @@ public class SplineRopeSnakeRefactored : MonoBehaviour, IArrow
     
     // IArrow 接口实现
     public IArrowData arrowData { get; set; }
+    public IArrowData ArrowData { get; }
     public Transform Transform => this.transform;
     
     bool IArrow.IsMoving => pathManager != null && pathManager.isMoving;
