@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using PrimeTween;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -62,12 +63,23 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
 
     public void MoveOut()
     {
-
+        // todo 
+        StartMoving(0);
     }
 
     public void StartMoving(float distance)
     {
-
+        // 使用 PrimeTween 进行移动，修改 SplineExtrude 的比例
+        // Tween.To(SplineExtrude, distance, new PrimeTweenConfig().SetEase(Ease.Linear).SetOnUpdate((float t) => SplineExtrude.Ratio = t));
+        var startValue = SplineExtrude.Range;
+        Tween.Custom(0, 1 - startValue.y, onValueChange: (v) =>
+        {
+            SplineExtrude.Range = new Vector2(startValue.x + v, startValue.y + v);
+            SplineExtrude.Rebuild();
+        }, ease: Ease.Linear, duration: 0.1f).OnComplete(() =>
+        {
+            Destroy(this.gameObject);
+        });
     }
 
     public void SetWaypoints(List<Vector3> points, bool resetDistance = true)

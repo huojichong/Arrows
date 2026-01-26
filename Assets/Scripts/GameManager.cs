@@ -31,7 +31,6 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GridSystem gridSystem;
 
-    [SerializeField] private Mesh tempMesh;
     void Start()
     {
 
@@ -122,7 +121,7 @@ public class GameManager : MonoBehaviour
         var path = new List<Vector3>();
         var arrVect = new Vector3(data.direction.x, 0, data.direction.y);
         
-        var endPos = data.customPath.Last() + arrVect * 10;
+        var endPos = data.customPath.Last() + arrVect * 30;
         
         path.AddRange(data.customPath);
         // 还有头的显示, 最后一个是头

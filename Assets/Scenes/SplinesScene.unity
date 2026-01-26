@@ -228,7 +228,6 @@ GameObject:
   - component: {fileID: 1745754694}
   - component: {fileID: 1745754696}
   - component: {fileID: 1745754697}
-  - component: {fileID: 1745754698}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -255,7 +254,6 @@ MonoBehaviour:
   currentLevel: 1
   totalMoves: 0
   arrowBlockPrefab: {fileID: 9130888722086857832, guid: 4958227452f5c485b9b44f8bb862d0ef, type: 3}
-  arrowBlockGPTPrefab: {fileID: 3130841402161198113, guid: b522fed8e247a4574984ae81cce4015e, type: 3}
   gestureManager: {fileID: 1745754696}
   gridSystem: {fileID: 1745754697}
 --- !u!4 &1745754695
@@ -305,46 +303,6 @@ MonoBehaviour:
   gridDimensions: {x: 10, y: 10}
   showGrid: 1
   gridColor: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &1745754698
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1745754692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Spline:
-    m_EditModeType: 1
-    m_Knots: []
-    m_MetaData: []
-    m_Closed: 0
-    m_IntData:
-      m_Data: []
-    m_FloatData:
-      m_Data: []
-    m_Float4Data:
-      m_Data: []
-    m_ObjectData:
-      m_Data: []
-  m_Splines:
-  - m_EditModeType: 1
-    m_Knots: []
-    m_MetaData: []
-    m_Closed: 0
-    m_IntData:
-      m_Data: []
-    m_FloatData:
-      m_Data: []
-    m_Float4Data:
-      m_Data: []
-    m_ObjectData:
-      m_Data: []
-  m_Knots:
-    m_KnotsLink: []
 --- !u!1 &1800560592
 GameObject:
   m_ObjectHideFlags: 0
