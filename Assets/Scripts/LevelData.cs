@@ -24,12 +24,25 @@ public class LevelData
 public class ArrowData : IArrowData
 {
     public string id { get; set; }
-    public Vector3 startPosition;
-    public Vector2Int direction;
+
+    public Vector3Int header
+    {
+        get
+        {
+            if (customPath != null && customPath.Count > 0)
+            {
+                return customPath[^1];
+            }
+
+            return Vector3Int.zero;
+        }
+    }
+
+    public Vector3Int direction { get; set; }
     
     [Header("视觉配置")]
     public Color blockColor = Color.gray;
-    public List<Vector3> customPath { get; set; }  // 自定义路径点
+    public List<Vector3Int> customPath { get; set; }  // 自定义路径点
     public int pathLength;
 }
 

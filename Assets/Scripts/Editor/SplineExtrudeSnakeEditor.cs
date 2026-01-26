@@ -1,17 +1,10 @@
+using UnityEditor;
+using UnityEngine;
 
-    using UnityEditor;
-    using UnityEngine;
-    using System.Collections.Generic;
-
-    [CustomEditor(typeof(SplineExtrudeSnake))]
-    public class SplineExtrudeSnakeEditor : UnityEditor.Editor
+[CustomEditor(typeof(SplineExtrudeSnake))]
+    public class SplineExtrudeSnakeEditor : Editor
     {
         private bool showCustomPath = false;
-
-        private void OnEnable()
-        {
-            
-        }
 
         override public void OnInspectorGUI()
         {
@@ -27,19 +20,19 @@
                 EditorGUILayout.BeginVertical("box");
                 
                 // ID
-                snake.ArrowData.id = EditorGUILayout.TextField("ID", snake.ArrowData.id);
+                EditorGUILayout.TextField("ID", snake.ArrowData.id);
                 
                 // Start Position
-                snake.ArrowData.startPosition = EditorGUILayout.Vector3Field("Start Position", snake.ArrowData.startPosition);
+                EditorGUILayout.Vector3IntField("Start Position", snake.ArrowData.header);
                 
                 // Direction
-                snake.ArrowData.direction = EditorGUILayout.Vector2IntField("Direction", snake.ArrowData.direction);
+                EditorGUILayout.Vector3IntField("Direction", snake.ArrowData.direction);
                 
                 // Block Color
-                snake.ArrowData.blockColor = EditorGUILayout.ColorField("Block Color", snake.ArrowData.blockColor);
+                EditorGUILayout.ColorField("Block Color", snake.ArrowData.blockColor);
                 
                 // Path Length
-                snake.ArrowData.pathLength = EditorGUILayout.IntField("Path Length", snake.ArrowData.pathLength);
+                EditorGUILayout.IntField("Path Length", snake.ArrowData.pathLength);
 
                 // Custom Path
                 if (snake.ArrowData.customPath != null)
@@ -50,7 +43,7 @@
                         EditorGUI.indentLevel++;
                         for (int i = 0; i < snake.ArrowData.customPath.Count; i++)
                         {
-                            snake.ArrowData.customPath[i] = EditorGUILayout.Vector3Field($"Point {i}", snake.ArrowData.customPath[i]);
+                            EditorGUILayout.Vector3IntField($"Point {i}", snake.ArrowData.customPath[i]);
                         }
                         EditorGUI.indentLevel--;
                     }

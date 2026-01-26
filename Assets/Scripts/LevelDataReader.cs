@@ -24,16 +24,16 @@ namespace DefaultNamespace
             {
                 var arrowBlockData = new ArrowData();
                 arrowBlockData.id = snakeDataConfig.id;
-                arrowBlockData.direction = new Vector2Int(snakeDataConfig.direction.dr, snakeDataConfig.direction.dc);
+                arrowBlockData.direction = new Vector3Int(snakeDataConfig.direction.dr,0, snakeDataConfig.direction.dc);
 
                 // ColorUtility.TryParseHtmlString("#" + snakeDataConfig.blockColor, out arrowBlockData.blockColor);
                 arrowBlockData.blockColor = Color.red;
-                arrowBlockData.customPath = new List<Vector3>();
+                arrowBlockData.customPath = new List<Vector3Int>();
                 arrowBlockData.pathLength = CalcLength(snakeDataConfig);
                 
                 foreach (var segment in snakeDataConfig.segments)
                 {
-                    arrowBlockData.customPath.Add(new Vector3(segment.r, 0, segment.c));
+                    arrowBlockData.customPath.Add(new Vector3Int(segment.r, 0, segment.c));
                 }
                 
                 data.arrowBlocks.Add(arrowBlockData);

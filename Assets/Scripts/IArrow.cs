@@ -1,13 +1,14 @@
-
-
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public interface IArrowData
 {
-    List<Vector3> customPath { get; set; }
+    List<Vector3Int> customPath { get; set; }
     string id { get; set; }
+    
+    Vector3Int header { get; }
+    
+    Vector3Int direction { get; set; }
 }
 
 public interface IArrow 

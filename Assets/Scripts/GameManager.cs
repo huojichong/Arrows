@@ -5,6 +5,7 @@ using System.Linq;
 using DefaultNamespace;
 using Gesture;
 using Gesture.Handlers;
+using Unity.VisualScripting;
 
 /// <summary>
 /// 游戏管理器，负责点击检测、游戏流程控制
@@ -85,12 +86,15 @@ public class GameManager : MonoBehaviour
             Debug.Log("箭头正在移动中，无法点击");
             return;
         }
-        else
+        else if(IsCanMoveOut(arrow,gridSystem))
         {
-            // todo 检查前方是否有别的方块阻挡，
-            // 现在直接移动出去
             gridSystem.UnregisterArrowBlock(arrow);
             arrow.MoveOut();
+        }
+        else
+        {
+            Debug.Log("无法移动出去。。");
+            return;
         }
         
         totalMoves++;
@@ -98,8 +102,25 @@ public class GameManager : MonoBehaviour
         // 检查是否有其他箭头在移动
         CheckGameState();
     }
-    
-    
+
+    private bool IsCanMoveOut(IArrow arrow, GridSystem gridSystem1)
+    {
+        return true;
+        // 检查前方是否有别的方块阻挡
+        var header = arrow.ArrowData.header;
+        var dir = arrow.ArrowData.direction;
+        for (int i = 1; i < 30; i++)
+        {
+            if (gridSystem1.IsGridOccupied(header + dir * i))
+            {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+
     private IEnumerator CreateSnakeCor()
     {
         var data = LevelDataReader.LoadLevelData(0);
@@ -122,8 +143,11 @@ public class GameManager : MonoBehaviour
         var arrVect = new Vector3(data.direction.x, 0, data.direction.y);
         
         var endPos = data.customPath.Last() + arrVect * 30;
-        
-        path.AddRange(data.customPath);
+
+        foreach (var pos in data.customPath)
+        {
+            path.Add(new Vector3(pos.x, pos.y, pos.z));
+        }
         // 还有头的显示, 最后一个是头
         // 屏蔽最后一个 的减1 操作
         //path[^1] -= arrVect;
@@ -143,17 +167,17 @@ public class GameManager : MonoBehaviour
     void CheckGameState()
     {
         // 检查是否所有箭头都完成移动
-        bool allCompleted = true;
+        bool allCompleted = false;
         
         // 检查普通箭头
-        foreach (var arrow in arrowBlocks)
-        {
-            if (arrow.IsMoving)
-            {
-                allCompleted = false;
-                break;
-            }
-        }
+        // foreach (var arrow in arrowBlocks)
+        // {
+        //     if (arrow.IsMoving)
+        //     {
+        //         allCompleted = false;
+        //         break;
+        //     }
+        // }
         
         if (allCompleted)
         {
