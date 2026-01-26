@@ -121,14 +121,18 @@ public class GameManager : MonoBehaviour
         var ropeSnake = Instantiate(arrowBlockPrefab).GetComponent<IArrow>();
         var path = new List<Vector3>();
         var arrVect = new Vector3(data.direction.x, 0, data.direction.y);
+        
         var endPos = data.customPath.Last() + arrVect * 10;
+        
         path.AddRange(data.customPath);
         // 还有头的显示, 最后一个是头
-        path[^1] -= arrVect;
+        // 屏蔽最后一个 的减1 操作
+        //path[^1] -= arrVect;
         
         path.Add(endPos);
         // 延长起点坐标
         ropeSnake.SetWaypoints(path);
+        
         ropeSnake.SetData(data);
         ropeSnake.InitArrow();
         return ropeSnake;

@@ -13,7 +13,7 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
     public SnakePath snakePath;
 
     private Mesh copyMesh;
-    //
+    
     // /// <summary>
     // /// 设置线段容器
     // /// </summary>
@@ -40,7 +40,14 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
 
     public void InitArrow()
     {
+        // 先设置数据，最后设置 mesh
+        // 设置范围，比例
+        var totalLength = PathTool.CalcLength(snakePath.waypoints);
+        SplineExtrude.Range = new Vector2(0, ArrowData.pathLength / totalLength);
+        
+        // 拷贝 mesh
         copyMesh = Instantiate(m_mesh);
+        // 触发重建
         SplineExtrude.targetMesh = copyMesh;
     }
 
