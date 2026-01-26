@@ -10,13 +10,13 @@ public class DragPathHandler : IGestureHandler
     public void OnDrag(SingleFingerGestureContext ctx)
     {
         Vector2 from = new Vector2(
-            Mathf.RoundToInt(ctx.worldDown.x),
-            Mathf.RoundToInt(ctx.worldDown.z)
+            ctx.worldDown.x,
+            ctx.worldDown.z
         );
 
         Vector2 to = new Vector2(
-            Mathf.RoundToInt(ctx.worldCurrent.x),
-            Mathf.RoundToInt(ctx.worldCurrent.z)
+            ctx.worldCurrent.x,
+            ctx.worldCurrent.z
         );
 
         OnDragPath?.Invoke(from, to);

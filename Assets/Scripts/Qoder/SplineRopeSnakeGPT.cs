@@ -133,9 +133,21 @@ public class SplineRopeSnakeGPT : MonoBehaviour, IArrow
         this.currentDistance = data.pathLength + initialDistanceOffset;
     }
 
+    public IArrowData ArrowData { get; }
     public Transform Transform => this.transform;
 
-    bool IArrow.IsMoving => isMoving;
+    public bool IsMoving
+    {
+        get
+        {
+            return isMoving;
+        }
+        set
+        {
+            isMoving = value;
+        }
+    }
+
 
     public void Reset()
     {

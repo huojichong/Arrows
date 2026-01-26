@@ -16,11 +16,6 @@ public class LevelData
 }
 
 
-public interface IArrowData
-{
-    List<Vector3> customPath { get; set; }
-    string id { get; set; }
-}
 
 /// <summary>
 /// 单个箭头块的数据

@@ -25,8 +25,6 @@ public class GameManager : MonoBehaviour
     [Header("关卡配置")]
     public GameObject arrowBlockPrefab;
 
-    public GameObject arrowBlockGPTPrefab;
-    
     [SerializeField]
     private GestureManager gestureManager;
     
@@ -36,7 +34,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
 
-        return;
         Time.timeScale = 0.1f;
         
         if (mainCamera == null)
@@ -120,7 +117,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     IArrow CreateArrowBlock(ArrowData data)
     {
-        var ropeSnake = Instantiate(arrowBlockPrefab).GetComponent<SplineRopeSnake>();
+        var ropeSnake = Instantiate(arrowBlockPrefab).GetComponent<IArrow>();
         var path = new List<Vector3>();
         var arrVect = new Vector3(data.direction.x, 0, data.direction.y);
         var endPos = data.customPath.Last() + arrVect * 10;

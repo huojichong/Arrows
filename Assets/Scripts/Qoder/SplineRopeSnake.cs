@@ -248,14 +248,11 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
         // 添加偏移量，确保绳子大部分显示在路径上（避免尾部在起点堆积）
         this.currentDistance = data.pathLength + initialDistanceOffset;
     }
-    
-    public Transform Transform => this.transform;
-    
-    bool IArrow.IsMoving
-    {
-        get => isMoving;
-    }
 
+    public IArrowData ArrowData { get; }
+    public Transform Transform => this.transform;
+    public bool IsMoving { get; set; }
+    
     public void Reset()
     {
         StopAllCoroutines();

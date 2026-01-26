@@ -57,7 +57,7 @@ public class GridSystem : MonoBehaviour
     /// </summary>
     public void RegisterArrowBlock(IArrow arrow)
     {
-        foreach (var data in arrow.arrowData.customPath)
+        foreach (var data in arrow.ArrowData.customPath)
         {
             var dataInt = GetGridPosition(data);
             if (gridOccupancy.ContainsKey(dataInt))
@@ -84,7 +84,7 @@ public class GridSystem : MonoBehaviour
     /// </summary>
     public void UnregisterArrowBlock(IArrow arrow)
     {
-        foreach (var data in arrow.arrowData.customPath)
+        foreach (var data in arrow.ArrowData.customPath)
         {
             var dataInt = GetGridPosition(data);
             if (gridOccupancy.ContainsKey(dataInt) && gridOccupancy[dataInt] == arrow)

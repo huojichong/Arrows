@@ -24,7 +24,7 @@ namespace ConfigBean
         public SnakeDirection direction;
         
         public string blockColor = "";
-        public List<SnakePos> segments;  // 自定义路径点
+        public List<SnakePos> segments = new List<SnakePos>();  // 自定义路径点
     }
     
     [Serializable]
@@ -34,6 +34,7 @@ namespace ConfigBean
         public int c;
     }
 
+    [Serializable]
     public struct SnakeDirection
     {
         public int dr;

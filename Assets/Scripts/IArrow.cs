@@ -3,22 +3,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IArrow : IArrow<IArrowData>
+public interface IArrowData
 {
-    Transform Transform { get; }
-    bool IsMoving { get; }
-    void Reset();
-
-    void MoveOut();
-    
-    void StartMoving(float distance);
-    
-    public void SetWaypoints(List<Vector3> points, bool resetDistance = true);
+    List<Vector3> customPath { get; set; }
+    string id { get; set; }
 }
 
-public interface IArrow<TD> where TD : IArrowData
+public interface IArrow
 {
-    TD arrowData { get; set; }
-    
-    void SetData(TD arrowData);
+    IArrowData ArrowData { get; }
+    Transform Transform { get; }
+    bool IsMoving { get; }
+
+    void InitArrow();
+    void Reset();
+    void MoveOut();
+    void StartMoving(float distance);
+    void SetWaypoints(List<Vector3> points, bool resetDistance = true);
+
+    void SetData(IArrowData data);
+}
+
+
+public interface IArrow<TD> : IArrow where TD : IArrowData
+{
+    new TD ArrowData { get; }
+    void SetData(TD data);
 }
