@@ -154,7 +154,10 @@
         /// </summary>
         public float GetAccumulatedWeightAtPos(float dist)
         {
-            if (dist <= 0) return 0;
+            if (dist <= 0)
+            {
+                return 0;
+            }
             float currentAcc = 0;
             for (int i = 0; i < splineDistances.Count - 1; i++)
             {
