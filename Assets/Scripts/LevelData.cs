@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -16,7 +17,6 @@ public class LevelData
 }
 
 
-
 /// <summary>
 /// 单个箭头块的数据
 /// </summary>
@@ -31,7 +31,7 @@ public class ArrowData : IArrowData
         {
             if (customPath != null && customPath.Count > 0)
             {
-                return customPath[^1];
+                return customPath.Last();
             }
 
             return Vector3Int.zero;

@@ -1,11 +1,10 @@
 using System.Collections;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using DefaultNamespace;
 using Gesture;
 using Gesture.Handlers;
-using Unity.VisualScripting;
+using UnityEngine;
 
 /// <summary>
 /// 游戏管理器，负责点击检测、游戏流程控制
@@ -14,7 +13,6 @@ public class GameManager : MonoBehaviour
 {
     [Header("游戏配置")]
     public Camera mainCamera;
-    public LayerMask arrowLayer;
     
     [Header("关卡配置")]
     public int currentLevel = 1;
@@ -32,10 +30,20 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GridSystem gridSystem;
 
+    private void Awake()
+    {
+        if (gestureManager == null)
+        {
+            gestureManager = GetComponent<GestureManager>();
+        }
+        if (gridSystem == null)
+        {
+            gridSystem = GetComponent<GridSystem>();
+        }
+    }
+
     void Start()
     {
-
-        Time.timeScale = 0.1f;
         
         if (mainCamera == null)
         {
@@ -144,13 +152,41 @@ public class GameManager : MonoBehaviour
         
         var endPos = data.customPath.Last() + arrVect * 30;
 
-        foreach (var pos in data.customPath)
+        bool isRemoveSameLinePoint = true;
+
+        if (isRemoveSameLinePoint)
         {
-            path.Add(new Vector3(pos.x, pos.y, pos.z));
+            var firstPos = data.customPath.First();
+            path.Add(new Vector3(firstPos.x, firstPos.y, firstPos.z));
+            
+            for(int i = 1;i<data.customPath.Count - 1;i++)
+            {
+                var pre = data.customPath[i - 1];
+                var current = data.customPath[i];
+                var next = data.customPath[i + 1];
+            
+                // 判断点 pre, current,next 是否在同一条线上，
+                if (Vector3.Dot(current - pre, next - current) < 0.01f)
+                {
+                    // 不在同一条线上
+                    Debug.Log("点 pre, current,next 不在同一条线上");
+                
+                
+                    path.Add(new Vector3(current.x, current.y, current.z));
+                }
+            
+            }
+            var lastPos = data.customPath.Last();
+            path.Add(new Vector3(lastPos.x, lastPos.y, lastPos.z));
+        }
+        else
+        {
+            foreach (var pos in data.customPath)
+            {
+                path.Add(new Vector3(pos.x,pos.y,pos.z));
+            }
         }
         // 还有头的显示, 最后一个是头
-        // 屏蔽最后一个 的减1 操作
-        //path[^1] -= arrVect;
         
         path.Add(endPos);
         // 延长起点坐标

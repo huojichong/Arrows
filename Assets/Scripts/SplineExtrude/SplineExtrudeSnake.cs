@@ -44,6 +44,8 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         // 设置范围，比例
         var totalLength = PathTool.CalcLength(snakePath.waypoints);
         SplineExtrude.Range = new Vector2(0, ArrowData.pathLength / totalLength);
+
+        SplineExtrude.RebuildOnSplineChange = true;
         
         // 拷贝 mesh
         copyMesh = Instantiate(m_mesh);
@@ -75,7 +77,7 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         {
             SplineExtrude.Range = new Vector2(startValue.x + v, startValue.y + v);
             SplineExtrude.Rebuild();
-        }, ease: Ease.Linear, duration: 0.1f).OnComplete(() =>
+        }, ease: Ease.Linear, duration: 1f).OnComplete(() =>
         {
             Destroy(this.gameObject);
         });

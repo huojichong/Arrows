@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ConfigBean;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace DefaultNamespace
             data.levelName = dataConfig.levelName;
             data.levelNumber = dataConfig.levelNumber;
             data.arrowBlocks = new List<ArrowData>();
-
+            
             foreach (var snakeDataConfig in dataConfig.snakes)
             {
                 var arrowBlockData = new ArrowData();
@@ -30,7 +31,6 @@ namespace DefaultNamespace
                 arrowBlockData.blockColor = Color.red;
                 arrowBlockData.customPath = new List<Vector3Int>();
                 arrowBlockData.pathLength = CalcLength(snakeDataConfig);
-                
                 foreach (var segment in snakeDataConfig.segments)
                 {
                     arrowBlockData.customPath.Add(new Vector3Int(segment.r, 0, segment.c));

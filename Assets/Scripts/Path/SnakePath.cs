@@ -43,10 +43,18 @@
             foreach (var wp in waypoints)
                 localPoints.Add(splineContainer.transform.InverseTransformPoint(wp));
 
-            // 2. 添加起始点
+            // 2. 预计算：为了解决连续转弯冲突，我们需要知道每条边能分配给圆角的“最大配额”
+            // 逻辑：每条边被两端的圆角平分，确保 p1 和 p2 不会交错
+            float[] sideQuotas = new float[localPoints.Count - 1];
+            for (int i = 0; i < localPoints.Count - 1; i++)
+            {
+                sideQuotas[i] = math.distance(localPoints[i], localPoints[i + 1]) * 0.5f;
+            }
+            
+            // 3. 添加起始点
             spline.Add(new BezierKnot(localPoints[0]));
 
-            // 3. 处理中间的转弯点
+            // 4. 处理中间的转弯点
             for (int i = 1; i < localPoints.Count - 1; i++)
             {
                 Vector3 prev = localPoints[i - 1];
@@ -56,48 +64,46 @@
                 Vector3 dirIn = (curr - prev).normalized;
                 Vector3 dirOut = (next - curr).normalized;
 
-                // 计算两条线段的夹角
-                float angle = Vector3.Angle(dirIn, dirOut);
+                // 使用点积计算夹角，防止 math.acos 范围溢出导致 NaN
+                float dot = math.dot(dirIn, dirOut);
+                dot = math.clamp(dot, -1f, 1f);
+                float angleRad = math.acos(dot); // 这是方向矢量之间的夹角 (外角)
 
-                // 如果角度变化大于阈值，则生成圆弧
-                if (angle > 0.05f)
+                // 如果角度太小（接近直线）或角度太大（接近回头弯 180°）
+                if (angleRad < 0.001f || angleRad > math.PI - 0.01f)
                 {
-                    float alphaRad = angle * Mathf.Deg2Rad;
-
-                    // 计算从转角顶点到切点的距离 D = R * tan(theta/2)
-                    float tangentDist = filletRadius * Mathf.Tan(alphaRad * 0.5f);
-
-                    // 限制：圆角切点不能超过线段长度的 45%，防止连续转弯导致的路径重叠
-                    float distPrev = Vector3.Distance(prev, curr);
-                    float distNext = Vector3.Distance(curr, next);
-                    float maxAllowedDist = Mathf.Min(distPrev, distNext) * 0.45f;
-
-                    float actualDist = Mathf.Min(tangentDist, maxAllowedDist);
-                    // 如果实际距离被压缩了，重新推算对应的实际半径
-                    float actualRadius = actualDist / Mathf.Tan(alphaRad * 0.5f);
-
-                    // 计算圆弧的两个端点 (切点)
-                    Vector3 p1 = curr - dirIn * actualDist;
-                    Vector3 p2 = curr + dirOut * actualDist;
-
-                    // 计算 Bezier 句柄长度：h = (4/3) * tan(theta/4) * R
-                    float handleLen = (4f / 3f) * Mathf.Tan(alphaRad * 0.25f) * actualRadius;
-
-                    // 添加圆弧起点：TangentOut 指向转角顶点方向
-                    BezierKnot knot1 = new BezierKnot(p1);
-                    knot1.TangentOut = (float3)(dirIn * handleLen);
-                    spline.Add(knot1);
-
-                    // 添加圆弧终点：TangentIn 从转角顶点方向指回
-                    BezierKnot knot2 = new BezierKnot(p2);
-                    knot2.TangentIn = (float3)(-dirOut * handleLen);
-                    spline.Add(knot2);
-                }
-                else
-                {
-                    // 直线点，直接添加
                     spline.Add(new BezierKnot(curr));
+                    continue;
                 }
+                
+                // 计算切点距离：D = R * tan(θ/2)
+                float tangentDist = filletRadius * math.tan(angleRad * 0.5f);
+
+                // 限制距离：不能超过进入边和出去边的配额
+                float actualDist = math.min(tangentDist, math.min(sideQuotas[i - 1], sideQuotas[i]));
+            
+                // 重新计算受限后的实际半径（用于计算 Bezier 句柄长度）
+                float actualRadius = actualDist / math.tan(angleRad * 0.5f);
+
+                // 计算切点
+                float3 p1 = curr - dirIn * actualDist;
+                float3 p2 = curr + dirOut * actualDist;
+
+                // 计算 Bezier 句柄长度系数：h = (4/3) * tan(θ/4) * R
+                float handleLen = (4f / 3f) * math.tan(angleRad * 0.25f) * actualRadius;
+
+                // 添加圆弧起点 (p1)
+                // 关键：必须设置 TangentMode 为 Broken，否则前后的直线段会被这个点的入方向句柄带歪
+                BezierKnot knot1 = new BezierKnot(p1);
+                knot1.TangentIn = float3.zero;
+                knot1.TangentOut = dirIn * handleLen;
+                spline.Add(knot1, TangentMode.Broken);
+
+                // 添加圆弧终点 (p2)
+                BezierKnot knot2 = new BezierKnot(p2);
+                knot2.TangentIn = -dirOut * handleLen;
+                knot2.TangentOut = float3.zero;
+                spline.Add(knot2, TangentMode.Broken);
             }
 
             // 4. 添加终点
