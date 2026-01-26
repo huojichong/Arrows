@@ -60,7 +60,7 @@
                 float angle = Vector3.Angle(dirIn, dirOut);
 
                 // 如果角度变化大于阈值，则生成圆弧
-                if (angle > 0.01f)
+                if (angle > 0.05f)
                 {
                     float alphaRad = angle * Mathf.Deg2Rad;
 

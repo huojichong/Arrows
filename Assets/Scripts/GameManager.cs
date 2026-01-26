@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
     {
         var ropeSnake = Instantiate(arrowBlockPrefab).GetComponent<IArrow>();
         var path = new List<Vector3>();
-        var arrVect = new Vector3(data.direction.x, 0, data.direction.y);
+        var arrVect = new Vector3(data.direction.x, data.direction.y, data.direction.z);
         
         var endPos = data.customPath.Last() + arrVect * 30;
 
