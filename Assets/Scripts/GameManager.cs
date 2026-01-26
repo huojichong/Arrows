@@ -134,11 +134,12 @@ public class GameManager : MonoBehaviour
         var data = LevelDataReader.LoadLevelData(0);
         foreach (var blockData in data.arrowBlocks)
         {
-            yield return new WaitForEndOfFrame();
+            // yield return new WaitForEndOfFrame();
             var arrow = CreateArrowBlock(blockData);
             gridSystem.RegisterArrowBlock(arrow);
             // yield break;
         }
+        yield return new WaitForEndOfFrame();
     }
 
     /// <summary>

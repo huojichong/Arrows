@@ -134,6 +134,40 @@
             // 5. 路径改变后，立即重建密度图
             BuildStaticDensityMap();
         }
+        
+        /// <summary>
+        /// 在 spline 上对应的
+        /// 👉 startDistance
+        /// 👉 endDistance
+        /// 👉 再换算成 Range (0~1)
+        /// </summary>
+        /// <param name="worldPos"></param>
+        /// <returns></returns>
+        public float GetDistanceOnSpline(Vector3 worldPos)
+        {
+            var spline = splineContainer.Spline;
+
+            // 转换到 spline 本地空间
+            Vector3 localPos = splineContainer.transform.InverseTransformPoint(worldPos);
+
+            // 找最近点
+            SplineUtility.GetNearestPoint(
+                spline,
+                localPos,
+                out float3 nearest,
+                out float t
+            );
+
+            // 转换成距离
+            float dist = SplineUtility.ConvertIndexUnit(
+                spline,
+                t,
+                PathIndexUnit.Normalized,
+                PathIndexUnit.Distance
+            );
+
+            return dist;
+        }
 
         /// <summary>
         /// 预计算整条路径的"疏密权重图"。
