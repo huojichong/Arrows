@@ -14,7 +14,7 @@ public interface IArrowData
 public interface IArrow 
 {
     IArrowData ArrowData { get; }
-    Transform Transform { get; }
+    
     bool IsMoving { get; }
 
     void InitArrow();

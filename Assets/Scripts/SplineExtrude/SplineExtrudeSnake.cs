@@ -14,22 +14,10 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
 
     private Mesh copyMesh;
 
-
     [SerializeField]
     private float totalLength;
-    // /// <summary>
-    // /// 设置线段容器
-    // /// </summary>
-    // /// <param name="splineContainer"></param>
-    // public void SetSplineContainer(SplineContainer splineContainer)
-    // {
-    //     this.SplineExtrude.Container = splineContainer;
-    //     snakePath.splineContainer = splineContainer;
-    // }
-
 
     #region override
-
 
     public ArrowData ArrowData { get; protected set; }
 
@@ -38,7 +26,6 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         this.ArrowData = data;
     }
 
-    public Transform Transform { get; }
     public bool IsMoving { get; }
 
     public void InitArrow()
@@ -123,19 +110,16 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         snakePath.waypoints = points;
         snakePath.UpdateSplineFromWaypoints();
     }
-
-
+    #endregion
+ 
+    
     #region IArrow override
-
     // 显式实现非泛型接口
     IArrowData IArrow.ArrowData => ArrowData;
     void IArrow.SetData(IArrowData data)
     {
         SetData(data as ArrowData);
     }
-
-    #endregion
-
     #endregion
 
 }
