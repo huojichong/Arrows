@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e94409cd29aa43a4aac2bd55c08ccd69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_mesh: {fileID: 4300000, guid: cdc12a0f50f93491fb0920ebdba5b3b4, type: 2}
   SplineExtrude: {fileID: 1385122992863812350}
   snakePath: {fileID: 9208182377526965106}
 --- !u!114 &1385122992863812350

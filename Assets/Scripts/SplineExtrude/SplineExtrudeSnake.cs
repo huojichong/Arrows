@@ -1,14 +1,18 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
 
 public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
 {
 
+    [SerializeField]
+    private Mesh m_mesh;
     public SplineExtrude SplineExtrude;
 
     public SnakePath snakePath;
-    
+
+    private Mesh copyMesh;
     //
     // /// <summary>
     // /// 设置线段容器
@@ -36,12 +40,17 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
 
     public void InitArrow()
     {
-
+        copyMesh = Instantiate(m_mesh);
+        SplineExtrude.targetMesh = copyMesh;
     }
 
     public void Reset()
     {
-
+        // 删除 mesh
+        if (copyMesh != null)
+        {
+            Destroy(copyMesh);
+        }
     }
 
     public void MoveOut()
@@ -73,8 +82,6 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
     #endregion
 
     #endregion
-
-    // IArrowData IArrow.ArrowData => ArrowData;
 
 }
 

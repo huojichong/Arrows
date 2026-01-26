@@ -30,7 +30,8 @@ public class GameManager : MonoBehaviour
     
     [SerializeField]
     private GridSystem gridSystem;
-    
+
+    [SerializeField] private Mesh tempMesh;
     void Start()
     {
 
