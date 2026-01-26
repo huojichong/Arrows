@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviour
         
         var endPos = data.customPath.Last() + arrVect * 30;
 
-        bool isRemoveSameLinePoint = true;
+        bool isRemoveSameLinePoint = false;
 
         if (isRemoveSameLinePoint)
         {

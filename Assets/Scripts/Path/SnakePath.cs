@@ -51,9 +51,27 @@
                 sideQuotas[i] = math.distance(localPoints[i], localPoints[i + 1]) * 0.5f;
             }
             
-            // 3. 添加起始点
-            spline.Add(new BezierKnot(localPoints[0]));
+            // === 工具函数：添加 Linear Knot ===
+            void AddLinearKnot(Vector3 pos)
+            {
+                BezierKnot k = new BezierKnot(pos);
+                k.TangentIn = float3.zero;
+                k.TangentOut = float3.zero;
+                spline.Add(k, TangentMode.Linear);
+            }
 
+            // === 工具函数：添加 Bezier Knot（Broken）===
+            void AddBezierKnot(Vector3 pos, float3 tanIn, float3 tanOut)
+            {
+                BezierKnot k = new BezierKnot(pos);
+                k.TangentIn = tanIn;
+                k.TangentOut = tanOut;
+                spline.Add(k, TangentMode.Broken);
+            }
+            
+            // 3. 添加起始点
+            // spline.Add(new BezierKnot(localPoints[0]));
+            AddLinearKnot(localPoints[0]);
             // 4. 处理中间的转弯点
             for (int i = 1; i < localPoints.Count - 1; i++)
             {
@@ -72,7 +90,8 @@
                 // 如果角度太小（接近直线）或角度太大（接近回头弯 180°）
                 if (angleRad < 0.001f || angleRad > math.PI - 0.01f)
                 {
-                    spline.Add(new BezierKnot(curr));
+                    // spline.Add(new BezierKnot(curr));
+                    AddLinearKnot(localPoints[i]);
                     continue;
                 }
                 
@@ -94,20 +113,23 @@
 
                 // 添加圆弧起点 (p1)
                 // 关键：必须设置 TangentMode 为 Broken，否则前后的直线段会被这个点的入方向句柄带歪
-                BezierKnot knot1 = new BezierKnot(p1);
-                knot1.TangentIn = float3.zero;
-                knot1.TangentOut = dirIn * handleLen;
-                spline.Add(knot1, TangentMode.Broken);
-
+                // BezierKnot knot1 = new BezierKnot(p1);
+                // knot1.TangentIn = float3.zero;
+                // knot1.TangentOut = dirIn * handleLen;
+                // spline.Add(knot1, TangentMode.Broken);
+                AddBezierKnot(p1, float3.zero, dirIn * handleLen);
                 // 添加圆弧终点 (p2)
-                BezierKnot knot2 = new BezierKnot(p2);
-                knot2.TangentIn = -dirOut * handleLen;
-                knot2.TangentOut = float3.zero;
-                spline.Add(knot2, TangentMode.Broken);
+                // BezierKnot knot2 = new BezierKnot(p2);
+                // knot2.TangentIn = -dirOut * handleLen;
+                // knot2.TangentOut = float3.zero;
+                // spline.Add(knot2, TangentMode.Broken);
+                //
+                AddBezierKnot(p2,  -dirOut * handleLen, float3.zero);
             }
 
             // 4. 添加终点
-            spline.Add(new BezierKnot(localPoints[localPoints.Count - 1]));
+            // spline.Add(new BezierKnot(localPoints[localPoints.Count - 1]));
+            AddLinearKnot(localPoints[localPoints.Count - 1]);
 
             // 5. 路径改变后，立即重建密度图
             BuildStaticDensityMap();

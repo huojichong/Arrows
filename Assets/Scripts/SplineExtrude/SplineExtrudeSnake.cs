@@ -43,14 +43,25 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         // 先设置数据，最后设置 mesh
         // 设置范围，比例
         var totalLength = PathTool.CalcLength(snakePath.waypoints);
-        SplineExtrude.Range = new Vector2(0, ArrowData.pathLength / totalLength);
-
+            // SplineExtrude.Range = new Vector2(0, ArrowData.pathLength / totalLength);
+        UpdateRange(0, ArrowData.pathLength / totalLength);
         SplineExtrude.RebuildOnSplineChange = true;
         
         // 拷贝 mesh
         copyMesh = Instantiate(m_mesh);
         // 触发重建
         SplineExtrude.targetMesh = copyMesh;
+    }
+
+    /// <summary>
+    /// SplineExtrude 在 Range 边界 + Broken Bezier + 极小角度时，Frame 构建不稳定导致的可视化伪弯曲。
+    /// SplineExtrude 在 Range 端点采样到一个几何/切线不连续点时，发生法线和截面旋转异常，表现为模型突然弯曲；微调 Range 避开该点即可消失。
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    private void UpdateRange(float x, float y)
+    {
+        SplineExtrude.Range = new Vector2(x + 0.001f, y - 0.001f);
     }
 
     public void Reset()
@@ -75,7 +86,8 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         var startValue = SplineExtrude.Range;
         Tween.Custom(0, 1 - startValue.y, onValueChange: (v) =>
         {
-            SplineExtrude.Range = new Vector2(startValue.x + v, startValue.y + v);
+            // SplineExtrude.Range = new Vector2(startValue.x + v, startValue.y + v);
+            UpdateRange(startValue.x + v, startValue.y + v);
             SplineExtrude.Rebuild();
         }, ease: Ease.Linear, duration: 1f).OnComplete(() =>
         {
