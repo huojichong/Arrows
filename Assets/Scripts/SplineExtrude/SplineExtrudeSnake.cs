@@ -150,24 +150,31 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
 
     public void MoveOut()
     {
-        // todo 
-        StartMoving(0);
-    }
-
-    public void StartMoving(float distance)
-    {
-        // 使用 PrimeTween 进行移动，修改 SplineExtrude 的比例
-        // Tween.To(SplineExtrude, distance, new PrimeTweenConfig().SetEase(Ease.Linear).SetOnUpdate((float t) => SplineExtrude.Ratio = t));
         var startValue = SplineExtrude.Range;
+        // todo 移动速率，起点不同，移动的长度也不同。
+        // 待定现在在每个头的位置，额外增加30个长度，
         Tween.Custom(0, 1 - startValue.y, onValueChange: (v) =>
         {
             // SplineExtrude.Range = new Vector2(startValue.x + v, startValue.y + v);
             UpdateRange(startValue.x + v, startValue.y + v);
             SplineExtrude.Rebuild();
-        }, ease: Ease.Linear, duration: 1f).OnComplete(() =>
+        }, ease: Ease.Linear, duration: 1f).OnComplete(() => { Destroy(this.gameObject); });
+    }
+
+    /// <summary>
+    /// 单位格子数 需要有反弹
+    /// </summary>
+    /// <param name="gridCnt"></param>
+    public void StartMoving(float gridCnt)
+    {
+        //todo 时间最好根据距离来计算，移动距离不同，移动数据不一样，看起来太生硬了
+        var startValue = SplineExtrude.Range;
+        var move = gridCnt / totalLength + startValue.y;
+        Tween.Custom(0, move - startValue.y, onValueChange: (v) =>
         {
-            Destroy(this.gameObject);
-        });
+            UpdateRange(startValue.x + v, startValue.y + v);
+            SplineExtrude.Rebuild();
+        }, ease: Ease.Linear, duration: 0.2f, cycleMode: CycleMode.Yoyo, cycles: 2);
     }
 
     public void SetWaypoints(List<Vector3> points, bool resetDistance = true)

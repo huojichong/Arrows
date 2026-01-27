@@ -94,13 +94,16 @@ public class GameManager : MonoBehaviour
             Debug.Log("箭头正在移动中，无法点击");
             return;
         }
-        else if(IsCanMoveOut(arrow,gridSystem))
+        else if(IsCanMoveOut(arrow,gridSystem,out int distance))
         {
             gridSystem.UnregisterArrowBlock(arrow);
             arrow.MoveOut();
         }
         else
         {
+            // 移动不出去，前移 distance 距离，然后反弹回来。
+            arrow.StartMoving(distance );
+            
             Debug.Log("无法移动出去。。");
             return;
         }
@@ -111,16 +114,17 @@ public class GameManager : MonoBehaviour
         CheckGameState();
     }
 
-    private bool IsCanMoveOut(IArrow arrow, GridSystem gridSystem1)
+    private bool IsCanMoveOut(IArrow arrow, GridSystem gridSystem1,out int distance)
     {
-        return true;
         // 检查前方是否有别的方块阻挡
+        distance = 0;
         var header = arrow.ArrowData.header;
         var dir = arrow.ArrowData.direction;
         for (int i = 1; i < 30; i++)
         {
             if (gridSystem1.IsGridOccupied(header + dir * i))
             {
+                distance = i;
                 return false;
             }
         }
