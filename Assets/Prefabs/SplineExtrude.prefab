@@ -381,8 +381,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_mesh: {fileID: 4300000, guid: cdc12a0f50f93491fb0920ebdba5b3b4, type: 2}
   SplineExtrude: {fileID: 1385122992863812350}
-  head: {fileID: 9147190130724098955}
-  tail: {fileID: 3292011775977233437}
+  head: {fileID: 2328055864974754461}
+  tail: {fileID: 3094852908797964950}
   snakePath: {fileID: 9208182377526965106}
   totalLength: 0
 --- !u!114 &1385122992863812350

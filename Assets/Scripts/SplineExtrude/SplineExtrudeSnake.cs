@@ -11,8 +11,8 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
     private Mesh m_mesh;
     public SplineExtrude SplineExtrude;
 
-    public Transform head;
-    public Transform tail;
+    public SplineEndCap head;
+    public SplineEndCap tail;
 
     public SnakePath snakePath;
 
@@ -85,52 +85,27 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
     }
     
 #if UNITY_EDITOR
-
     void Update()
     {
         UpdateFollowers(SplineExtrude.Range.x, SplineExtrude.Range.y);
     }
-
 #endif
 
     private void UpdateFollowers(float x, float y)
     {
-        return;
         if (snakePath == null || snakePath.splineContainer == null) return;
 
         var container = snakePath.splineContainer;
         var containerTransform = container.transform;
 
 
-        void UpdatePos(Transform tranns,float t,bool useStartEnd)
+        void UpdatePos(SplineEndCap tranns,float t)
         {
-            if (tranns == null) 
-                return;
-            var spline = container.Spline;
-            spline.Evaluate(t, out var localPosition, out var tangent, out var upVector);
-        
-            // 转换到世界坐标
-            Vector3 worldPos = containerTransform.TransformPoint(localPosition);
-            Vector3 worldTangent = containerTransform.TransformDirection(tangent).normalized;
-            Vector3 worldUp = containerTransform.TransformDirection(upVector).normalized;
-        
-            // 应用偏移
-            worldPos += worldTangent ;
-        
-            // 设置位置
-            tranns.position = worldPos;
-        
-            // 设置旋转，让物体朝向切线方向
-            if (worldTangent != Vector3.zero)
-            {
-                // 起点端盖朝向反方向，终点端盖朝向正方向
-                Vector3 forward = useStartEnd ? -worldTangent : worldTangent;
-                tranns.rotation = Quaternion.LookRotation(forward, worldUp);
-            }
+            tranns.UpdateCapPos();
         }
         
-        UpdatePos(head,y,false);
-        UpdatePos(tail,x,true);
+        UpdatePos(head,y);
+        UpdatePos(tail,x);
         
         // 头部跟随 Range.y (End of range)
         // if (head != null)

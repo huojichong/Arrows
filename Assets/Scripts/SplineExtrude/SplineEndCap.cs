@@ -23,7 +23,18 @@ public class SplineEndCap : MonoBehaviour
     [Tooltip("位置偏移（沿切线方向）")]
     public float offsetAlongTangent = 0f;
 
+#if UNITY_EDITOR // 编辑器调试用
     void Update()
+    {
+        if (Application.isPlaying)
+        {
+            return;
+        }
+        UpdateCapPos();
+    }
+#endif
+    
+    public void UpdateCapPos()
     {
         if (splineContainer == null || splineContainer.Spline == null)
             return;
