@@ -60,6 +60,11 @@ public class MultiSegmentSnake : MonoBehaviour, IArrow
             pathManager.currentDistance = _totalLength + initialDistanceOffset;
     }
 
+    public void Hited(Vector3Int hitPoint, Vector3Int arrowDataDirection)
+    {
+        
+    }
+
     /// <summary>
     /// 根据总长度动态创建 Segment
     /// </summary>

@@ -249,6 +249,11 @@ public class SplineRopeSnake : MonoBehaviour, IArrow
         this.currentDistance = data.pathLength + initialDistanceOffset;
     }
 
+    public void Hited(Vector3Int hitPoint, Vector3Int arrowDataDirection)
+    {
+        
+    }
+
     public IArrowData ArrowData { get; }
     public Transform Transform => this.transform;
     public bool IsMoving { get; set; }

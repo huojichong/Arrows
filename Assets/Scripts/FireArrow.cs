@@ -13,6 +13,11 @@ public class FireArrow : MonoBehaviour, IArrow<ArrowData>
         SetData(data as ArrowData);
     }
 
+    public void Hited(Vector3Int hitPoint, Vector3Int arrowDataDirection)
+    {
+        
+    }
+
     public Transform Transform => transform;
 
     public bool IsMoving { get; private set; }

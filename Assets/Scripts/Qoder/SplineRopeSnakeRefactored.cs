@@ -45,6 +45,11 @@ public class SplineRopeSnakeRefactored : MonoBehaviour, IArrow
             pathManager.currentDistance = data.pathLength + initialDistanceOffset;
     }
 
+    public void Hited(Vector3Int hitPoint, Vector3Int arrowDataDirection)
+    {
+        
+    }
+
     public void Reset()
     {
         StopAllCoroutines();
