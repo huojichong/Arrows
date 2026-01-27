@@ -24,6 +24,7 @@ public interface IArrow
     void SetWaypoints(List<Vector3> points, bool resetDistance = true);
 
     void SetData(IArrowData data);
+    void Hited(Vector3Int hitPoint, Vector3Int arrowDataDirection);
 }
 
 

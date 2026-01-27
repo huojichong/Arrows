@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using PrimeTween;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
-// [ExecuteInEditMode]
+[ExecuteInEditMode]
 public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
 {
 
@@ -170,6 +171,63 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
     void IArrow.SetData(IArrowData data)
     {
         SetData(data as ArrowData);
+    }
+
+    /// <summary>
+    /// 当前箭头被撞击，撞击点，撞击来的方向
+    /// </summary>
+    /// <param name="hitPoint"></param>
+    /// <param name="arrowDataDirection"></param>
+    public void Hited(Vector3Int hitPoint, Vector3Int arrowDataDirection)
+    {
+        var spline = snakePath.splineContainer.Spline;
+        // 1. 获取最近点的索引
+        // 注意：GetNearestPoint 默认返回 float3，我们需要找到对应的 Knot 索引
+        // 建议使用 SplineUtility 找到最近的 t，然后推算出 Knot 索引，或者遍历 Knots
+        int knotIndex = GetNearestKnotIndex(hitPoint);
+        if (knotIndex == -1) return;
+
+        // 获取原始坐标
+        float3 originalPos = spline[knotIndex].Position;
+        // 计算撞击目标点（往撞击方向偏移）
+        float3 targetPos = originalPos + (float3)((Vector3)arrowDataDirection * 0.5f); // 偏移距离可调
+
+        // 2. 使用 PrimeTween 制作动画
+        // 我们创建一个从 0 到 1 的数值动画，在更新回调里插值位置并重新赋值给 Spline
+        Tween.Custom(0f, 1f, duration: 0.4f, onValueChange: newVal =>
+            {
+                // 计算当前帧的位置：使用 Punch 曲线效果更好，或者手动做回弹
+                // 这里使用 Shake/Punch 逻辑的变体：
+                // 也可以简单地：CurrentPos = Lerp(originalPos, targetPos, someCurveValue);
+        
+                var currentKnot = spline[knotIndex];
+                // 模拟反弹：这里使用简化的插值，配合 Ease.Punch 效果最佳
+                float multiplier = Mathf.Sin(newVal * Mathf.PI); // 简单的 0 -> 1 -> 0 变化
+                currentKnot.Position = math.lerp(originalPos, targetPos, multiplier);
+        
+                // 必须重新赋值，Spline 才会更新
+                spline[knotIndex] = currentKnot;
+            },ease:Ease.OutQuad,cycles:2,cycleMode:CycleMode.Yoyo); // 设置缓动
+    }
+
+    // 辅助方法：找到最近的 Knot 索引
+    private int GetNearestKnotIndex(Vector3 worldPos)
+    {
+        var splineContainer = snakePath.splineContainer;
+        float3 localPos = splineContainer.transform.InverseTransformPoint(worldPos);
+        float minDst = float.MaxValue;
+        int index = -1;
+
+        for (int i = 0; i < splineContainer.Spline.Count; i++)
+        {
+            float dst = math.distance(localPos, splineContainer.Spline[i].Position);
+            if (dst < minDst)
+            {
+                minDst = dst;
+                index = i;
+            }
+        }
+        return index;
     }
     #endregion
 

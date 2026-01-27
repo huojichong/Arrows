@@ -175,6 +175,39 @@
             return dist;
         }
 
+        public BezierKnot GetNearestPoint(Vector3 worldPos)
+        {
+            float3 localPoint = splineContainer.transform.InverseTransformPoint(worldPos);
+
+            // 2. 找到最近的点在 Spline 上的参数 t (范围 0 到 1)
+            // t 表示该点在整条曲线上的百分比位置
+            SplineUtility.GetNearestPoint(splineContainer.Spline, localPoint, out float3 nearestPoint, out float t);
+
+            // 3. 将全线段比例 t 转换为 Knot 索引
+            // 例如：如果有 4 个点（3 段），t=0.5 对应第 1 段中间
+            int knotCount = splineContainer.Spline.Count;
+            float curveCount = splineContainer.Spline.Closed ? knotCount : knotCount - 1;
+    
+            float curveIndexFloat = t * curveCount;
+            int previousKnotIndex = Mathf.FloorToInt(curveIndexFloat);
+            int nextKnotIndex = splineContainer.Spline.Closed ? (previousKnotIndex + 1) % knotCount : previousKnotIndex + 1;
+
+            return splineContainer.Spline[nextKnotIndex];
+            
+            float threshold = 0.1f; // 容差距离
+            for (int i = 0; i < splineContainer.Spline.Count; i++)
+            {
+                if (math.distance(localPoint, splineContainer.Spline[i].Position) < threshold)
+                {
+                    Debug.Log($"直接撞击到了 Knot {i}");
+                    return splineContainer.Spline[i];
+                }
+            }
+            
+            Debug.Log($"没有找到");
+            return splineContainer.Spline[0];
+        }
+
         /// <summary>
         /// 预计算整条路径的"疏密权重图"。
         /// 核心逻辑：在转弯半径处采样更高权重，使骨骼自动聚集在弯道。
