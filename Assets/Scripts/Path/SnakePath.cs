@@ -1,4 +1,5 @@
 
+    using System;
     using System.Collections.Generic;
     using Unity.Mathematics;
     using UnityEngine;
@@ -26,6 +27,11 @@
         public float fullLength { get; protected set; }
         private const int DENSITY_SAMPLES_PER_UNIT = 10; // 每单位长度的采样点密度（提高精度）
 
+
+        private void Awake()
+        {
+            splineContainer.Spline.Closed = false;
+        }
 
         /// <summary>
         /// 根据 waypoints 生成带有固定半径圆角的平滑 Spline 路径

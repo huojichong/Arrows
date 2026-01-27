@@ -3,6 +3,7 @@ using PrimeTween;
 using UnityEngine;
 using UnityEngine.Splines;
 
+// [ExecuteInEditMode]
 public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
 {
 
@@ -10,12 +11,20 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
     private Mesh m_mesh;
     public SplineExtrude SplineExtrude;
 
+    public Transform head;
+    public Transform tail;
+
     public SnakePath snakePath;
 
     private Mesh copyMesh;
 
     [SerializeField]
     private float totalLength;
+
+    private void Awake()
+    {
+        Debug.Log("xxx");
+    }
 
     #region override
 
@@ -71,7 +80,88 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
     /// </summary>
     private void UpdateRange(float x, float y)
     {
-        SplineExtrude.Range = new Vector2(x , y );
+        SplineExtrude.Range = new Vector2(x, y);
+        UpdateFollowers(x, y);
+    }
+    
+#if UNITY_EDITOR
+
+    void Update()
+    {
+        UpdateFollowers(SplineExtrude.Range.x, SplineExtrude.Range.y);
+    }
+
+#endif
+
+    private void UpdateFollowers(float x, float y)
+    {
+        return;
+        if (snakePath == null || snakePath.splineContainer == null) return;
+
+        var container = snakePath.splineContainer;
+        var containerTransform = container.transform;
+
+
+        void UpdatePos(Transform tranns,float t,bool useStartEnd)
+        {
+            if (tranns == null) 
+                return;
+            var spline = container.Spline;
+            spline.Evaluate(t, out var localPosition, out var tangent, out var upVector);
+        
+            // 转换到世界坐标
+            Vector3 worldPos = containerTransform.TransformPoint(localPosition);
+            Vector3 worldTangent = containerTransform.TransformDirection(tangent).normalized;
+            Vector3 worldUp = containerTransform.TransformDirection(upVector).normalized;
+        
+            // 应用偏移
+            worldPos += worldTangent ;
+        
+            // 设置位置
+            tranns.position = worldPos;
+        
+            // 设置旋转，让物体朝向切线方向
+            if (worldTangent != Vector3.zero)
+            {
+                // 起点端盖朝向反方向，终点端盖朝向正方向
+                Vector3 forward = useStartEnd ? -worldTangent : worldTangent;
+                tranns.rotation = Quaternion.LookRotation(forward, worldUp);
+            }
+        }
+        
+        UpdatePos(head,y,false);
+        UpdatePos(tail,x,true);
+        
+        // 头部跟随 Range.y (End of range)
+        // if (head != null)
+        // {
+        //     if (container.Evaluate(y, out var pos, out var tangent, out var up))
+        //     {
+        //         // 计算世界空间的位置和旋转
+        //         // Vector3 worldPos = containerTransform.TransformPoint((Vector3)pos);
+        //         Quaternion worldRot = containerTransform.rotation * Quaternion.LookRotation((Vector3)tangent, (Vector3)up);
+        //
+        //         // 转换为相对于当前节点的本地空间 (因为头尾现在是子节点)
+        //         // head.localPosition = transform.InverseTransformPoint(worldPos);
+        //         head.localPosition = pos;
+        //         head.localRotation = Quaternion.Inverse(transform.rotation) * worldRot;
+        //     }
+        // }
+        //
+        // // 尾部跟随 Range.x (Start of range)
+        // if (tail != null)
+        // {
+        //     if (container.Evaluate(x, out var pos, out var tangent, out var up))
+        //     {
+        //         // 计算世界空间的位置和旋转
+        //         // Vector3 worldPos = containerTransform.TransformPoint((Vector3)pos);
+        //         Quaternion worldRot = containerTransform.rotation * Quaternion.LookRotation((Vector3)tangent, (Vector3)up);
+        //
+        //         // 转换为相对于当前节点的本地空间
+        //         tail.localPosition = pos;
+        //         tail.localRotation = Quaternion.Inverse(transform.rotation) * worldRot;
+        //     }
+        // }
     }
 
     public void Reset()
