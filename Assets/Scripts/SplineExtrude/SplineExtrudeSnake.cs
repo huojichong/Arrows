@@ -35,7 +35,7 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         this.ArrowData = data;
     }
 
-    public bool IsMoving { get; }
+    public bool IsMoving { get; protected set; }
 
     public void InitArrow()
     {
@@ -107,36 +107,6 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         UpdatePos(head,y);
         UpdatePos(tail,x);
         
-        // 头部跟随 Range.y (End of range)
-        // if (head != null)
-        // {
-        //     if (container.Evaluate(y, out var pos, out var tangent, out var up))
-        //     {
-        //         // 计算世界空间的位置和旋转
-        //         // Vector3 worldPos = containerTransform.TransformPoint((Vector3)pos);
-        //         Quaternion worldRot = containerTransform.rotation * Quaternion.LookRotation((Vector3)tangent, (Vector3)up);
-        //
-        //         // 转换为相对于当前节点的本地空间 (因为头尾现在是子节点)
-        //         // head.localPosition = transform.InverseTransformPoint(worldPos);
-        //         head.localPosition = pos;
-        //         head.localRotation = Quaternion.Inverse(transform.rotation) * worldRot;
-        //     }
-        // }
-        //
-        // // 尾部跟随 Range.x (Start of range)
-        // if (tail != null)
-        // {
-        //     if (container.Evaluate(x, out var pos, out var tangent, out var up))
-        //     {
-        //         // 计算世界空间的位置和旋转
-        //         // Vector3 worldPos = containerTransform.TransformPoint((Vector3)pos);
-        //         Quaternion worldRot = containerTransform.rotation * Quaternion.LookRotation((Vector3)tangent, (Vector3)up);
-        //
-        //         // 转换为相对于当前节点的本地空间
-        //         tail.localPosition = pos;
-        //         tail.localRotation = Quaternion.Inverse(transform.rotation) * worldRot;
-        //     }
-        // }
     }
 
     public void Reset()
@@ -153,12 +123,17 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         var startValue = SplineExtrude.Range;
         // todo 移动速率，起点不同，移动的长度也不同。
         // 待定现在在每个头的位置，额外增加30个长度，
+        IsMoving = true;
         Tween.Custom(0, 1 - startValue.y, onValueChange: (v) =>
         {
             // SplineExtrude.Range = new Vector2(startValue.x + v, startValue.y + v);
             UpdateRange(startValue.x + v, startValue.y + v);
             SplineExtrude.Rebuild();
-        }, ease: Ease.Linear, duration: 1f).OnComplete(() => { Destroy(this.gameObject); });
+        }, ease: Ease.Linear, duration: 1f).OnComplete(() =>
+        {
+            IsMoving = false;
+            Destroy(this.gameObject);
+        });
     }
 
     /// <summary>
@@ -167,6 +142,7 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
     /// <param name="gridCnt"></param>
     public void StartMoving(float gridCnt)
     {
+        IsMoving = true;
         //todo 时间最好根据距离来计算，移动距离不同，移动数据不一样，看起来太生硬了
         var startValue = SplineExtrude.Range;
         var move = gridCnt / totalLength + startValue.y;
@@ -174,7 +150,10 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         {
             UpdateRange(startValue.x + v, startValue.y + v);
             SplineExtrude.Rebuild();
-        }, ease: Ease.Linear, duration: 0.2f, cycleMode: CycleMode.Yoyo, cycles: 2);
+        }, ease: Ease.Linear, duration: 0.2f, cycleMode: CycleMode.Yoyo, cycles: 2).OnComplete(() =>
+        {
+            IsMoving = false;
+        });
     }
 
     public void SetWaypoints(List<Vector3> points, bool resetDistance = true)
