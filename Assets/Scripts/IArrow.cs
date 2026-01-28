@@ -4,7 +4,7 @@ using UnityEngine;
 public interface IArrowData
 {
     List<Vector3Int> customPath { get; set; }
-    string id { get; set; }
+    int id { get; set; }
     
     Vector3Int header { get; }
     

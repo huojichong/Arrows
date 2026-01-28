@@ -20,7 +20,7 @@ using UnityEngine;
                 EditorGUILayout.BeginVertical("box");
                 
                 // ID
-                EditorGUILayout.TextField("ID", snake.ArrowData.id);
+                EditorGUILayout.TextField("ID", snake.ArrowData.id.ToString());
                 
                 // Start Position
                 EditorGUILayout.Vector3IntField("Start Position", snake.ArrowData.header);

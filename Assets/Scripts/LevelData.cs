@@ -23,7 +23,7 @@ public class LevelData
 [Serializable]
 public class ArrowData : IArrowData
 {
-    public string id { get; set; }
+    public int id { get; set; }
 
     public Vector3Int header
     {

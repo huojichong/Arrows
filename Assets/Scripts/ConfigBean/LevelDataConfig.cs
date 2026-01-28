@@ -20,7 +20,7 @@ namespace ConfigBean
     [Serializable]
     public class SnakeDataConfig
     {
-        public string id;
+        public int id;
         public SnakeDirection direction;
         
         public string blockColor = "";
