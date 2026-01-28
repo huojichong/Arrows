@@ -371,7 +371,7 @@ MonoBehaviour:
   m_RebuildFrequency: 30
   m_UpdateColliders: 1
   m_Sides: 8
-  m_SegmentsPerUnit: 5
+  m_SegmentsPerUnit: 4.5
   m_Capped: 0
   m_Radius: 0.18
   m_Range: {x: 0.10557661, y: 0.6507851}
@@ -384,7 +384,7 @@ MonoBehaviour:
     - rid: 8744544109641859074
       type: {class: Circle, ns: UnityEngine.Splines.ExtrusionShapes, asm: Unity.Splines}
       data:
-        m_Sides: 8
+        m_Sides: 6
 --- !u!114 &9208182377526965106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,7 +399,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   splineContainer: {fileID: 185199048070275818}
   waypoints: []
-  filletRadius: 0.35
+  filletRadius: 0.3
   curvatureSensitivity: 15
   splineDistances: []
   splineWeights: []
