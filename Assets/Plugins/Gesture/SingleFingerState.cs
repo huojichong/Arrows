@@ -11,6 +11,7 @@ namespace Gesture
         float _time;
 
         Vector2 _screenDown;
+        Vector2 _lastScreenPos;
         Vector3 _worldDown;
 
         public void Begin(PointerState p, GestureManager gm)
@@ -22,6 +23,7 @@ namespace Gesture
             _dragging = false;
             _time = 0f;
             _screenDown = p.position;
+            _lastScreenPos = p.position;
 
             gm.SingleFingerHandler?.OnPointerDown(BuildContext(p, gm));
         }
@@ -30,15 +32,28 @@ namespace Gesture
         {
             _time += Time.deltaTime;
 
-            float dist = Vector2.Distance(_screenDown, p.position);
-            if (!_dragging && dist > gm.dragDistanceThreshold)
+            float totalDist = Vector2.Distance(_screenDown, p.position);
+
+            if (!_dragging && totalDist > gm.dragDistanceThreshold)
             {
                 _dragging = true;
+                _lastScreenPos = p.position;
                 gm.SingleFingerHandler?.OnDragBegin(BuildContext(p, gm));
+                return;
             }
 
             if (_dragging)
-                gm.SingleFingerHandler?.OnDrag(BuildContext(p, gm));
+            {
+                Vector2 delta = p.position - _lastScreenPos;
+                float deltaDist = delta.magnitude;
+                float speed = deltaDist / Time.deltaTime;
+
+                if (deltaDist >= gm.dragMinDelta || speed >= gm.dragMinSpeed)
+                {
+                    gm.SingleFingerHandler?.OnDrag(BuildContext(p, gm));
+                    _lastScreenPos = p.position;
+                }
+            }
         }
 
         public void End(GestureManager gm)
@@ -67,6 +82,7 @@ namespace Gesture
                 worldDown = _worldDown,
                 worldCurrent = worldCurrent,
                 screenDown = _screenDown,
+                screenLast = _lastScreenPos,
                 screenCurrent = p.position,
                 elapsed = _time
             };

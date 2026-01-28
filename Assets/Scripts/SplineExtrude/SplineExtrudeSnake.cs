@@ -146,7 +146,7 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         {
             UpdateRange(startValue.x + v, startValue.y + v);
             SplineExtrude.Rebuild();
-        }, ease: Ease.Linear, duration: 0.2f, cycleMode: CycleMode.Yoyo, cycles: 2).OnComplete(() =>
+        }, ease: Ease.Linear, duration: 0.1f, cycleMode: CycleMode.Yoyo, cycles: 2).OnComplete(() =>
         {
             IsMoving = false;
         });
@@ -175,6 +175,8 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
     /// <param name="arrowDataDirection"></param>
     public void Hited(Vector3Int hitPoint, Vector3Int arrowDataDirection)
     {
+        // 屏蔽被点击蛇的弯曲效果
+        return;
         var spline = snakePath.splineContainer.Spline;
         // 1. 获取最近点的索引
         // 注意：GetNearestPoint 默认返回 float3，我们需要找到对应的 Knot 索引

@@ -3,7 +3,7 @@ using Gesture.Handlers;
 namespace Gesture
 {
     using UnityEngine;
-using System.Collections.Generic;
+    using System.Collections.Generic;
 
 public class GestureManager : MonoBehaviour
 {
@@ -11,7 +11,9 @@ public class GestureManager : MonoBehaviour
     public float clickTimeThreshold = 0.2f;
     public float dragDistanceThreshold = 10f;
     public float planeY = 0f;
-
+    public float dragMinDelta = 1.5f;   // 像素级位移
+    public float dragMinSpeed = 20f;    // 像素 / 秒
+    
     public IGestureHandler SingleFingerHandler;
 
     public System.Action<TwoFingerGestureContext> OnTwoFingerBegin;

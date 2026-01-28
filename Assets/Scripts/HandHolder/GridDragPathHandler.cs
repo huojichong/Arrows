@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class GridDragPathHandler : IGestureHandler
 {
-    public System.Action<Vector2Int, Vector2Int> OnDragPath;
+    public System.Action<Vector2, Vector2> OnDragPath;
 
     public void OnDrag(SingleFingerGestureContext ctx)
     {
-        Vector2Int from = new Vector2Int(
-            Mathf.RoundToInt(ctx.worldDown.x),
-            Mathf.RoundToInt(ctx.worldDown.z)
+        Vector2 from = new Vector2(
+            ctx.screenLast.x,
+            ctx.screenLast.y
         );
 
-        Vector2Int to = new Vector2Int(
-            Mathf.RoundToInt(ctx.worldCurrent.x),
-            Mathf.RoundToInt(ctx.worldCurrent.z)
+        Vector2 to = new Vector2(
+            ctx.screenCurrent.x,
+            ctx.screenCurrent.y
         );
 
         OnDragPath?.Invoke(from, to);

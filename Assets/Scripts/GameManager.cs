@@ -69,19 +69,33 @@ public class GameManager : MonoBehaviour
 
         gameController.InitAsync(level);
     }
-    
+
 
     private void InitGestureManager()
     {
         var click = new GridClickHandler();
-        
-        click.OnGridClicked +=gameController.OnGridClicked;
-        var drag  = new GridDragPathHandler();
 
+        click.OnGridClicked += gameController.OnGridClicked;
+        var drag = new GridDragPathHandler();
+        drag.OnDragPath += OnDragPath;
         var composite = new CompositeGestureHandler(click, drag);
 
         gestureManager.SingleFingerHandler = composite;
-  
+
+        gestureManager.OnTwoFingerUpdate += OnTwoFingerUpdate;
+    }
+
+    private void OnTwoFingerUpdate(TwoFingerGestureContext obj)
+    {
+        
+    }
+
+    private void OnDragPath(Vector2 from, Vector2 to)
+    {
+        // 处理拖动路径，控制相机移动， 需要有缓动
+        Vector2 center = (to - from) * -0.05f;
+        mainCamera.transform.position += new Vector3(center.x, 0, center.y);
+        
     }
 
     /// <summary>
