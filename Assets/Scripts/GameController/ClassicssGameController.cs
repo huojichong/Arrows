@@ -28,8 +28,9 @@ namespace GameController
         public void OnGridClicked(Vector3Int obj)
         {
             Debug.Log("onGridClicked:" + obj);
-            var arrow = gridSystem.GetArrowBlockAt(obj);
+            var arrow = gridSystem.GetArrowBlockAt(obj) ?? gridSystem.GetArrowBlocksInRadius(obj);
 
+            
             if (arrow == null)
             {
                 return;
@@ -53,11 +54,11 @@ namespace GameController
                 arrow.StartMoving(distance);
 
                 // 查找到撞击点
-                var hitPoint = arrow.ArrowData.header + arrow.ArrowData.direction * distance;
-                // 拿到被撞的箭头，
-                var hitArrow = gridSystem.GetArrowBlockAt(hitPoint);
-                // 
-                hitArrow.Hited(hitPoint, arrow.ArrowData.direction);
+                // var hitPoint = arrow.ArrowData.header + arrow.ArrowData.direction * distance;
+                // // 拿到被撞的箭头，
+                // var hitArrow = gridSystem.GetArrowBlockAt(hitPoint);
+                // // 
+                // hitArrow.Hited(hitPoint, arrow.ArrowData.direction);
 
 
                 Debug.Log("无法移动出去。。");

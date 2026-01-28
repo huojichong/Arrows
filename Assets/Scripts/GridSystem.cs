@@ -150,5 +150,26 @@ public class GridSystem : MonoBehaviour
         }
 #endif
     }
+
+    static readonly Vector2Int[] Offsets = new Vector2Int[]
+    {
+        new(-1,-1), new(0,-1), new(1,-1),
+        new(-1, 0), new(0, 0), new(1, 0),
+        new(-1, 1), new(0, 1), new(1, 1),
+    };
     
+    public IArrow GetArrowBlocksInRadius(Vector3Int vector3Int)
+    {
+        // 如何获取周围8格范围内的箭头块
+        var offset3Int = new Vector3Int();
+        foreach (var offset in Offsets)
+        {
+            offset3Int.Set(offset.x,0,offset.y);
+            var arrow = GetArrowBlockAt(vector3Int + offset3Int);
+            if(arrow != null)
+                return arrow;
+        }
+
+        return null;
+    }
 }
