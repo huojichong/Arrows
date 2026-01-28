@@ -24,7 +24,7 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
 
     private void Awake()
     {
-        Debug.Log("xxx");
+        
     }
 
     #region override
@@ -85,12 +85,6 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         UpdateFollowers(x, y);
     }
     
-#if UNITY_EDITOR
-    void Update()
-    {
-        UpdateFollowers(SplineExtrude.Range.x, SplineExtrude.Range.y);
-    }
-#endif
 
     private void UpdateFollowers(float x, float y)
     {
@@ -133,6 +127,7 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         }, ease: Ease.Linear, duration: 1f).OnComplete(() =>
         {
             IsMoving = false;
+            Destroy(copyMesh);
             Destroy(this.gameObject);
         });
     }
@@ -205,6 +200,10 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
                 float multiplier = Mathf.Sin(newVal * Mathf.PI); // 简单的 0 -> 1 -> 0 变化
                 currentKnot.Position = math.lerp(originalPos, targetPos, multiplier);
         
+                // SplineExtrude 重建后，同步更新 Range 以刷新头尾位置
+                var currentRange = SplineExtrude.Range;
+                UpdateRange(currentRange.x, currentRange.y);
+                
                 // 必须重新赋值，Spline 才会更新
                 spline[knotIndex] = currentKnot;
             },ease:Ease.OutQuad); // 设置缓动

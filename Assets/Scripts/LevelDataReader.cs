@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using ConfigBean;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -13,7 +11,7 @@ namespace DefaultNamespace
         {
             var data = new  LevelData();
 
-            var json = File.ReadAllText(Application.streamingAssetsPath + "/Current_Level_1768961611274.json");
+            var json = Resources.Load<TextAsset>( "Current_Level_1768961611274").text;
             Debug.Log(json);
             var dataConfig = JsonConvert.DeserializeObject<LevelDataConfig>(json);
             

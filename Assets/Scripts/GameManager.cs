@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviour
     
     private void Awake()
     {
+        
+        Application.targetFrameRate = 60;
+        
         if (gestureManager == null)
         {
             gestureManager = GetComponent<GestureManager>();
@@ -80,9 +83,6 @@ public class GameManager : MonoBehaviour
         gestureManager.SingleFingerHandler = composite;
   
     }
-    
-
-
 
     /// <summary>
     /// 重置当前关卡
@@ -96,24 +96,5 @@ public class GameManager : MonoBehaviour
             arrow.Reset();
         }
         
-    }
-    
-    
-    /// <summary>
-    /// UI显示 - 可以通过GUI显示基本信息
-    /// </summary>
-    void OnGUI()
-    {
-        if (GUI.Button(new Rect(10, 80, 100, 30), "重置关卡"))
-        {
-            ResetLevel();
-        }
-        
-        // 提示信息
-        GUI.Label(new Rect(10, 120, 400, 100), 
-            "点击箭头块开始移动\n" +
-            "普通箭头: 简单移动\n" +
-            "分段箭头: 类似贪吃蛇，支持弯曲效果\n" +
-            "MegaBend 箭头: 使用 MegaFiers 插件，模型弯曲效果");
     }
 }
