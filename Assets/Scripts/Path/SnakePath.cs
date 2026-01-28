@@ -175,7 +175,13 @@
             return dist;
         }
 
-        public BezierKnot GetNearestPoint(Vector3 worldPos)
+        /// <summary>
+        /// 辅助方法：找到最近的 Knot 索引
+        /// SplineUtility.GetNearestPoint
+        /// </summary>
+        /// <param name="worldPos">世界坐标位置</param>
+        /// <returns></returns>
+        public int GetNearestKnotIndexBySpline(Vector3 worldPos)
         {
             float3 localPoint = splineContainer.transform.InverseTransformPoint(worldPos);
 
@@ -192,20 +198,30 @@
             int previousKnotIndex = Mathf.FloorToInt(curveIndexFloat);
             int nextKnotIndex = splineContainer.Spline.Closed ? (previousKnotIndex + 1) % knotCount : previousKnotIndex + 1;
 
-            return splineContainer.Spline[nextKnotIndex];
-            
-            float threshold = 0.1f; // 容差距离
+            return nextKnotIndex;
+        }
+        
+        /// <summary>
+        /// 根据给定的世界坐标位置，找到最近的 Spline 节点索引。
+        /// </summary>
+        /// <param name="worldPos">要查询的世界坐标位置。</param>
+        /// <returns>返回距离 worldPos 最近的 Spline 节点的索引。如果没有找到合适的节点，则返回 -1。</returns>
+        public int GetNearestKnotIndex(Vector3 worldPos)
+        {
+            float3 localPos = splineContainer.transform.InverseTransformPoint(worldPos);
+            float minDst = float.MaxValue;
+            int index = -1;
+
             for (int i = 0; i < splineContainer.Spline.Count; i++)
             {
-                if (math.distance(localPoint, splineContainer.Spline[i].Position) < threshold)
+                float dst = math.distance(localPos, splineContainer.Spline[i].Position);
+                if (dst < minDst)
                 {
-                    Debug.Log($"直接撞击到了 Knot {i}");
-                    return splineContainer.Spline[i];
+                    minDst = dst;
+                    index = i;
                 }
             }
-            
-            Debug.Log($"没有找到");
-            return splineContainer.Spline[0];
+            return index;
         }
 
         /// <summary>

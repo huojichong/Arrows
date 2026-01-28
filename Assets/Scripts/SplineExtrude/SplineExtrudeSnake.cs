@@ -184,7 +184,7 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         // 1. 获取最近点的索引
         // 注意：GetNearestPoint 默认返回 float3，我们需要找到对应的 Knot 索引
         // 建议使用 SplineUtility 找到最近的 t，然后推算出 Knot 索引，或者遍历 Knots
-        int knotIndex = GetNearestKnotIndex(hitPoint);
+        int knotIndex = snakePath.GetNearestKnotIndex(hitPoint);
         if (knotIndex == -1) return;
 
         // 获取原始坐标
@@ -207,28 +207,9 @@ public class SplineExtrudeSnake : MonoBehaviour, IArrow<ArrowData>
         
                 // 必须重新赋值，Spline 才会更新
                 spline[knotIndex] = currentKnot;
-            },ease:Ease.OutQuad,cycles:2,cycleMode:CycleMode.Yoyo); // 设置缓动
+            },ease:Ease.OutQuad); // 设置缓动
     }
 
-    // 辅助方法：找到最近的 Knot 索引
-    private int GetNearestKnotIndex(Vector3 worldPos)
-    {
-        var splineContainer = snakePath.splineContainer;
-        float3 localPos = splineContainer.transform.InverseTransformPoint(worldPos);
-        float minDst = float.MaxValue;
-        int index = -1;
-
-        for (int i = 0; i < splineContainer.Spline.Count; i++)
-        {
-            float dst = math.distance(localPos, splineContainer.Spline[i].Position);
-            if (dst < minDst)
-            {
-                minDst = dst;
-                index = i;
-            }
-        }
-        return index;
-    }
     #endregion
 
 }
